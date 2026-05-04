@@ -16,6 +16,7 @@
         .app-container { background: #ffffff; width: 100%; height: 100%; max-width: 420px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         @media (min-width: 500px) { .app-container { height: 95vh; border-radius: 24px; } }
 
+        /* --- SPLASH SCREEN ANIMATION UI --- */
         #splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #25D366, #128C7E); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.5s ease; }
         .splash-title { font-size: 72px; font-weight: 800; letter-spacing: 2px; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .splash-subtitle { font-size: 16px; font-weight: 500; opacity: 0; margin-top: 10px; letter-spacing: 1px; animation: slideUpFade 0.8s ease 0.4s forwards; }
@@ -46,6 +47,7 @@
         .chat-item { display: flex; align-items: center; padding: 14px 20px; cursor: pointer; transition: background 0.2s; }
         .chat-item:active { background: #f5f6f8; }
         
+        /* Updated Avatar CSS for Live Chat compatibility */
         .avatar { width: 52px; height: 52px; border-radius: 50%; background: #e0e0e0; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #555; font-size: 20px; margin-right: 15px; flex-shrink: 0; text-transform: uppercase; border: 2px solid #25D366; padding: 2px; overflow: hidden; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
         
@@ -189,18 +191,8 @@
     </div>
 
     <script>
-        // Yahan maine projectId add kar diya hai
-        const firebaseConfig = { 
-            databaseURL: "https://avengers-chat-a32e2-default-rtdb.firebaseio.com/",
-            projectId: "avengers-chat-a32e2" 
-        };
-        
-        try {
-            firebase.initializeApp(firebaseConfig);
-        } catch (err) {
-            console.error("Firebase init issue:", err);
-        }
-        
+        const firebaseConfig = { databaseURL: "https://avengers-chat-a32e2-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         let users = [];
