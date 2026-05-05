@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BTD Community Edition</title>
+    <title>BTD Community Edition 2.0</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -16,92 +16,188 @@
         .app-container { background: #ffffff; width: 100%; height: 100%; max-width: 420px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         @media (min-width: 500px) { .app-container { height: 95vh; border-radius: 24px; } }
 
-        /* --- SPLASH SCREEN ANIMATION UI --- */
         #splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #25D366, #128C7E); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.5s ease; }
-        .splash-title { font-size: 72px; font-weight: 800; letter-spacing: 2px; margin: 0; text-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .splash-subtitle { font-size: 16px; font-weight: 500; opacity: 0; margin-top: 10px; letter-spacing: 1px; animation: slideUpFade 0.8s ease 0.4s forwards; }
-        
+        .splash-title { font-size: 72px; font-weight: 800; letter-spacing: 2px; margin: 0; animation: popUp 0.8s forwards; }
         @keyframes popUp { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes slideUpFade { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 0.9; } }
 
-        .header { background: #ffffff; color: #111; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; z-index: 10; flex-shrink: 0; border-bottom: 1px solid #f0f0f0; }
-        .header button { background: none; border: none; color: #128C7E; font-size: 18px; font-weight: bold; cursor: pointer; outline: none; }
+        .header { background: #ffffff; color: #111; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; z-index: 10; flex-shrink: 0; border-bottom: 1px solid #f0f0f0; transition: 0.3s; }
+        .header button { background: none; border: none; color: #128C7E; font-size: 18px; font-weight: bold; cursor: pointer; outline: none; transition: 0.3s;}
         .header-icons { display: flex; gap: 18px; align-items: center; }
 
-        .screen { display: none; flex-direction: column; height: 100%; width: 100%; background: #ffffff; opacity: 0; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; background: #ffffff; opacity: 0; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s; }
         .screen.active { display: flex; opacity: 1; transform: translateY(0px); }
 
-        #search-container { display: none; padding: 10px 20px; background: #fff; border-bottom: 1px solid #f0f0f0; }
-        #search-input { width: 100%; padding: 10px 20px; border-radius: 30px; border: none; background: #f5f6f8; font-size: 14px; outline: none; }
-
-        .auth-top { background: linear-gradient(135deg, #25D366, #128C7E); height: 45%; min-height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; flex-shrink: 0; }
-        .auth-top h1 { font-size: 56px; margin-top: 10px; font-weight: 800; letter-spacing: -1px; }
+        /* --- AUTH UI --- */
+        .auth-top { background: linear-gradient(135deg, #25D366, #128C7E); height: 35%; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; flex-shrink: 0; }
+        .auth-top h1 { font-size: 56px; margin-top: 10px; font-weight: 800; }
         .auth-subtitle { font-size: 16px; font-weight: 500; opacity: 0.9; margin-top: 5px; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; }
-        
-        .form-box { padding: 35px 25px; display: flex; flex-direction: column; gap: 18px; margin-top: -30px; z-index: 5; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; }
-        input { width: 100%; padding: 16px 20px; border: 1px solid #e8e8e8; border-radius: 30px; font-size: 15px; outline: none; transition: 0.3s; background: #fafafa; }
-        input:focus { border-color: #25D366; background: #fff; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1); }
-        .btn-main { background-color: #25D366; color: white; border: none; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+        .form-box { padding: 35px 25px; display: flex; flex-direction: column; gap: 15px; margin-top: -30px; z-index: 5; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; overflow-y: auto; flex: 1;}
+        input, textarea { width: 100%; padding: 16px 20px; border: 1px solid #e8e8e8; border-radius: 30px; font-size: 15px; outline: none; background: #fafafa; margin-bottom: 5px; font-family: inherit;}
+        textarea { border-radius: 20px; resize: none; min-height: 100px; }
+        input:focus, textarea:focus { border-color: #25D366; background: #fff; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1); }
+        .btn-main { background-color: #25D366; color: white; border: none; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); margin-top: 10px; transition: 0.2s;}
+        .btn-secondary { background-color: #f0f2f5; color: #333; border: 1px solid #ddd; padding: 16px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 5px; transition: 0.2s; box-shadow: none; }
+        .back-btn { background: none; border: none; text-align: left; font-size: 22px; color: #555; margin-bottom: 10px; cursor: pointer; width: max-content; }
+        .ticket-code-box { background: #f8fafc; border: 2px dashed #128C7E; padding: 20px; text-align: center; border-radius: 20px; margin: 20px 0; font-size: 24px; font-weight: bold; color: #128C7E; letter-spacing: 2px;}
 
-        .chat-list { flex: 1; overflow-y: auto; background: #fff; padding-top: 10px; }
+        /* --- THEMES --- */
+        .admin-theme { background-color: #121212 !important; }
+        .admin-theme .header { background: #0a0a0a !important; color: #fff !important; border-bottom: 1px solid #E50914 !important; }
+        .admin-theme .header button { color: #E50914 !important; }
+        .admin-theme .chat-list { background: #121212 !important; }
+        .admin-theme .chat-item { border-bottom: 1px solid #1e1e1e; }
+        .admin-theme .chat-name { color: #f5f5f5 !important; }
+        .admin-theme .chat-msg { color: #888 !important; }
+        .admin-bg { background-color: #121212 !important; color: #f5f5f5; }
+        .admin-header { background: #0a0a0a; border-bottom: 1px solid #2a2a2a; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold; }
+        .admin-header button { color: #E50914; background: none; border: none; font-size: 18px; cursor: pointer; }
+        .admin-dashboard { padding: 15px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .admin-card { background: #1e1e1e; padding: 16px; border-radius: 16px; border-top: 3px solid #E50914; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
+        .admin-section { display: none; padding: 20px; overflow-y: auto; flex: 1; }
+        .admin-list-item { background: #1e1e1e; padding: 18px; border-radius: 12px; margin-bottom: 15px; display: flex; flex-direction: column; border-left: 4px solid #E50914; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .btn-danger { background: #E50914; color: white; border: none; padding: 12px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;}
+        .btn-danger-small { background: #E50914; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        .btn-success { background: #25D366; color: white; border: none; padding: 12px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .stat-box { background: #1e1e1e; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 15px; border: 1px solid #333; }
+        .stat-box h2 { color: #E50914; font-size: 32px; margin-bottom: 5px; }
+        .flow-log-item { background: #111; border: 1px solid #333; padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; color: #ccc; border-left: 4px solid #128C7E; cursor: pointer; }
+        .flow-arrow { color: #E50914; font-weight: bold; margin: 0 8px; }
+
+        /* --- CHAT LIST & BUBBLES UI --- */
+        .chat-list { flex: 1; overflow-y: auto; background: #fff; padding-top: 10px; transition: 0.3s; padding-bottom: 80px; }
         .chat-item { display: flex; align-items: center; padding: 14px 20px; cursor: pointer; transition: background 0.2s; }
-        .chat-item:active { background: #f5f6f8; }
-        
-        /* Updated Avatar CSS for Live Chat compatibility */
-        .avatar { width: 52px; height: 52px; border-radius: 50%; background: #e0e0e0; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #555; font-size: 20px; margin-right: 15px; flex-shrink: 0; text-transform: uppercase; border: 2px solid #25D366; padding: 2px; overflow: hidden; }
+        .avatar { width: 52px; height: 52px; border-radius: 50%; background: #e0e0e0; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #555; font-size: 20px; margin-right: 15px; flex-shrink: 0; text-transform: uppercase; border: 2px solid #25D366; overflow: hidden; padding: 2px;}
         .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        
-        .chat-info { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid #f5f5f5; padding-bottom: 14px; }
+        .chat-info { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 4px; padding-bottom: 14px; }
         .chat-name { font-size: 16px; font-weight: 600; color: #111; }
-        .chat-msg { font-size: 14px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .chat-room-header { background: #ffffff; padding: 12px 16px; display: flex; align-items: center; gap: 12px; font-weight: 700; z-index: 10; flex-shrink: 0; border-bottom: 1px solid #f0f0f0; }
-        .chat-room-header .avatar { width: 40px; height: 40px; font-size: 16px; margin: 0; border-width: 1px; }
+        .chat-msg { font-size: 14px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         
-        .message-area { flex: 1; padding: 20px 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #efeae2; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: cover; background-attachment: fixed; }
+        .chat-room-header { background: #ffffff; padding: 12px 16px; display: flex; align-items: center; gap: 12px; font-weight: 700; border-bottom: 1px solid #f0f0f0; }
+        .message-area { flex: 1; padding: 20px 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #efeae2; }
         
-        .msg { max-width: 82%; padding: 10px 14px 12px 14px; border-radius: 18px; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        /* NEW: V2 Message Bubble Styles */
+        .msg { max-width: 82%; padding: 8px 12px; border-radius: 18px; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column;}
+        .msg:active { opacity: 0.8; }
+        .msg img { max-width: 100%; border-radius: 12px; margin-top: 4px; display: block; }
         .msg.received { background: #ffffff; align-self: flex-start; border-top-left-radius: 4px; }
         .msg.sent { background: #dcf8c6; align-self: flex-end; border-top-right-radius: 4px; }
+        .msg.admin-alert { background: #1e1e1e; color: #ffcccc; border-left: 4px solid #E50914; align-self: center; text-align: center; font-weight: 600; font-size: 13px; padding: 10px 15px;}
         
-        .input-container { background: #f0f2f5; display: flex; flex-direction: column; flex-shrink: 0; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+        .msg-time { font-size: 10px; color: rgba(0,0,0,0.45); text-align: right; margin-top: 4px; margin-left: 10px; display: flex; justify-content: flex-end; align-items: center; gap: 4px;}
+        .msg-edited { font-size: 10px; font-style: italic; color: #888; }
+        .msg-reaction { position: absolute; bottom: -10px; right: 10px; background: white; border: 1px solid #eee; border-radius: 12px; padding: 2px 6px; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; gap: 4px; align-items: center; }
+        
+        /* NEW: Reply Preview Box inside Message */
+        .replied-box { background: rgba(0,0,0,0.05); border-left: 4px solid #128C7E; padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; font-size: 13px; color: #555; }
+        .replied-name { font-weight: bold; color: #128C7E; margin-bottom: 2px; }
+
+        /* NEW: Chat Input Area with Reply Preview */
+        .input-container { background: #f0f2f5; padding-bottom: max(8px, env(safe-area-inset-bottom)); display: flex; flex-direction: column;}
+        .reply-preview-bar { display: none; background: #e2e8f0; padding: 10px 15px; border-left: 4px solid #128C7E; justify-content: space-between; align-items: center; font-size: 13px; color: #334155; }
         .input-area { padding: 10px 15px; display: flex; gap: 10px; align-items: center; }
-        .input-area input { flex: 1; padding: 14px 20px; border: none; border-radius: 30px; font-size: 15px; background: #ffffff; outline: none; }
+        .input-area input { flex: 1; padding: 14px 20px; border: none; border-radius: 30px; font-size: 15px; outline: none; }
         .send-btn { background: #25D366; width: 46px; height: 46px; border-radius: 50%; color: white; border: none; font-size: 18px; transform: rotate(-35deg); cursor: pointer; }
 
-        .profile-dp-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
-        .profile-dp { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #25D366; padding: 3px; }
-        .dp-edit-btn { position: absolute; bottom: 0; right: 0; background: #128C7E; color: white; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: 3px solid white; font-size: 18px; }
+        /* NEW: Message Action Bottom Menu */
+        #msg-action-menu { position: absolute; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 2000; padding: 20px; transition: bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; gap: 10px;}
+        #msg-action-menu.active { bottom: 0; }
+        .action-btn { background: #f8fafc; border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; color: #334155; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px;}
+        .action-btn.danger { color: #E50914; background: #fef2f2; }
+        .menu-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index: 1999; display:none; }
 
-        #news-overlay { position: absolute; top: 0; left: 100%; width: 100%; height: 100%; background: #f0f2f5; z-index: 500; display: flex; flex-direction: column; transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        #news-overlay.active { left: 0; }
-        
-        #doc-modal, #feedback-modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; width: 88%; max-width: 360px; border-radius: 24px; padding: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); animation: popIn 0.3s ease; }
-        
-        #toast { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; transition: bottom 0.3s ease; z-index: 3000; }
-        #toast.show { bottom: 40px; }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: #111111; width: 70%; max-width: 300px; height: 60px; border-radius: 30px; display: flex; justify-content: space-evenly; align-items: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); z-index: 1000; display: none; border: 1px solid #333;}
+        .nav-item { color: rgba(255, 255, 255, 0.4); font-size: 24px; cursor: pointer; transition: 0.3s; padding: 10px; }
+        .nav-item.active { color: #ffffff; transform: scale(1.1); }
+
+        /* --- SHOP UI (GREEN & WHITE) --- */
+        #screen-shop { background: #fafafa; padding-bottom: 80px; overflow-y: auto; }
+        .shop-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .shop-header-dp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ddd; object-fit: cover; }
+        .shop-title { padding: 0 20px; font-size: 26px; font-weight: 800; color: #111; line-height: 1.2; }
+        .shop-title span { color: #128C7E; }
+        .shop-search-area { padding: 20px; display: flex; gap: 10px; }
+        .shop-search-bar { flex: 1; background: #f0f0f0; border-radius: 30px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; }
+        .shop-search-bar input { background: transparent; border: none; outline: none; padding: 0; width: 100%; margin: 0; }
+        .shop-filter-btn { background: #128C7E; color: white; border: none; width: 48px; height: 48px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+        .shop-categories { padding: 0 20px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+        .category-pill { background: #fff; border: 1px solid #ddd; color: #555; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; white-space: nowrap; transition: 0.3s; }
+        .category-pill.active { background: #128C7E; color: white; border-color: #128C7E; }
+        .shop-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .shop-card { background: white; border-radius: 20px; padding: 15px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
+        .card-heart { position: absolute; top: 12px; right: 12px; color: #128C7E; font-size: 18px; cursor: pointer; }
+        .card-blank-img { width: 100%; height: 90px; background: #f5f5f5; border-radius: 15px; margin-bottom: 12px; }
+        .card-title { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 2px; }
+        .card-sub { font-size: 12px; color: #888; margin-bottom: 12px; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .card-price { font-size: 15px; font-weight: 800; color: #111; }
+        .card-add-btn { background: #128C7E; color: white; border: none; width: 30px; height: 30px; border-radius: 8px; font-size: 18px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold;}
+
+        .profile-dp-container { position: relative; width: 110px; height: 110px; margin: 0 auto 20px; border-radius: 50%; border: 3px solid #25D366; padding: 3px; display: flex; justify-content: center; align-items: center; background: #e0e0e0; }
+        .profile-dp-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .edit-dp-icon { position: absolute; bottom: 0; right: 0; background: #128C7E; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 14px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        #toast { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; transition: bottom 0.3s ease; z-index: 3000; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        #toast.show { bottom: 90px; } 
     </style>
 </head>
 <body>
 
     <div class="app-container" id="main-container">
         
-        <div id="splash-screen">
-            <h1 class="splash-title">BTD</h1>
-            <div class="splash-subtitle">Welcome to the community</div>
-        </div>
+        <div id="splash-screen"><h1 class="splash-title">BTD</h1></div>
 
         <div id="screen-auth" class="screen active">
-            <div class="auth-top">
-                <h1>BTD</h1><div class="auth-subtitle">Community Edition</div>
+            <div class="auth-top"><h1>BTD</h1><div class="auth-subtitle">Community Edition 2.0</div></div>
+            
+            <div class="form-box" id="auth-main-view">
+                <button class="btn-main" onclick="showLoginView()">Log In</button>
+                <button class="btn-secondary" onclick="showSignupView()">New User</button>
+                <div style="display: flex; justify-content: space-evenly; margin-top: 25px;">
+                    <button style="background: none; border: none; color: #666; font-size: 13px; cursor: pointer; text-decoration: underline;" onclick="showTicketCreateView()">Need Admin Support?</button>
+                    <button style="background: none; border: none; color: #128C7E; font-size: 13px; cursor: pointer; font-weight: bold; text-decoration: underline;" onclick="showTicketStatusView()">Ticket Status</button>
+                </div>
             </div>
-            <div class="form-box">
-                <input type="text" id="mobile" placeholder="Mobile Number (10 digits)" autocomplete="off">
-                <input type="password" id="password" placeholder="Password">
-                <div id="name-box" style="display: none;"><input type="text" id="username" placeholder="Enter full name"></div>
-                <button class="btn-main" onclick="handleAuth()">Agree & Continue</button>
+
+            <div class="form-box" id="auth-login-view" style="display: none;">
+                <button class="back-btn" onclick="showAuthMain()">&#8592;</button>
+                <input type="text" id="login-mobile" placeholder="Mobile Number *" autocomplete="off">
+                <input type="password" id="login-password" placeholder="Password *">
+                <button class="btn-main" onclick="handleLogin()">Secure Log In</button>
+            </div>
+
+            <div class="form-box" id="auth-signup-view" style="display: none;">
+                <button class="back-btn" onclick="showAuthMain()">&#8592;</button>
+                <input type="text" id="signup-name" placeholder="Full Name *">
+                <input type="text" id="signup-mobile" placeholder="Mobile Number (10 digits) *" autocomplete="off">
+                <input type="password" id="signup-password" placeholder="Password *">
+                <button class="btn-main" style="background-color: #128C7E;" onclick="handleSignup()">Create Account</button>
+            </div>
+
+            <div class="form-box" id="auth-ticket-create-view" style="display: none;">
+                <button class="back-btn" onclick="showAuthMain()">&#8592;</button>
+                <h3 style="color: #333; margin-bottom: 5px;">Place a Ticket</h3>
+                <input type="text" id="ticket-name" placeholder="Your Name *">
+                <input type="text" id="ticket-mobile" placeholder="Mobile Number *">
+                <textarea id="ticket-issue" placeholder="Describe your problem here... *"></textarea>
+                <button class="btn-main" onclick="generateTicket()">Submit Ticket</button>
+            </div>
+
+            <div class="form-box" id="auth-ticket-success-view" style="display: none;">
+                <h3 style="color: #128C7E; text-align: center;">Ticket Submitted! 🌸</h3>
+                <div class="ticket-code-box" id="generated-ticket-code">BTD-XXXX</div>
+                <button class="btn-main" onclick="copyTicketCode()">Copy Code & Go Back</button>
+            </div>
+
+            <div class="form-box" id="auth-ticket-status-view" style="display: none;">
+                <button class="back-btn" onclick="showAuthMain()">&#8592;</button>
+                <h3 style="color: #333; margin-bottom: 15px;">Check Ticket Status</h3>
+                <input type="text" id="check-ticket-code" placeholder="Enter your BTD- Code here" style="text-transform: uppercase;">
+                <button class="btn-main" style="background-color: #128C7E;" onclick="checkTicketStatus()">Check Status</button>
+                <div id="ticket-result-area" style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px; display: none;">
+                    <strong style="color: #333; font-size: 14px;">Admin Reply:</strong>
+                    <p id="ticket-reply-text" style="color: #128C7E; font-size: 15px; margin-top: 5px; font-weight: 500;"></p>
+                </div>
             </div>
         </div>
 
@@ -109,40 +205,118 @@
             <div class="header">
                 <span id="welcome-text">Loading...</span>
                 <div class="header-icons">
-                    <button onclick="openFeedbackModal()">📮</button>
-                    <button onclick="toggleSearch()">🔍</button>
-                    <button onclick="openProfile()">⚙️</button>
+                    <button id="admin-btn" style="display: none;" onclick="openAdminPanel()">🛠️ Admin</button>
+                    <button onclick="openProfile()">⚙️ Profile</button>
                 </div>
             </div>
-            <div id="search-container"><input type="text" id="search-input" placeholder="Search chats..." onkeyup="filterUsers()"></div>
-            
             <div class="chat-list" id="chat-list">
-                
-                <div class="chat-item" style="background: #f8fafc; border-left: 4px solid #94a3b8; margin-bottom: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);" onclick="openChatRoom('live', 'Live Group Chat')">
-                    <div class="avatar" style="border: none; background: linear-gradient(135deg, #cbd5e1, #64748b); color: white; box-shadow: 0 2px 6px rgba(100,116,139,0.3);">🌐</div>
-                    <div class="chat-info" style="border-bottom: none;">
-                        <div class="chat-name" style="color: #334155; font-weight: 800;">Live Group Chat</div>
-                        <div class="chat-msg" style="color: #64748b; font-weight: 500;">Tap to join the community...</div>
-                    </div>
+                <div class="chat-item" onclick="openChatRoom('live', 'Live Group Chat')">
+                    <div class="avatar" style="border: none; background: linear-gradient(135deg, #cbd5e1, #64748b); color: white;">🌐</div>
+                    <div class="chat-info" style="border-bottom: none;"><div class="chat-name">Live Group Chat</div><div class="chat-msg">Tap to join the community...</div></div>
                 </div>
-
                 <div id="dynamic-user-list"></div>
             </div>
         </div>
 
-        <div id="screen-profile" class="screen">
-            <div class="header"><button onclick="window.history.back()">&#8592;</button><span>Profile</span></div>
-            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5; padding-top: 20px;">
-                <div class="profile-dp-container">
-                    <img id="my-profile-img" src="https://via.placeholder.com/150" class="profile-dp">
-                    <label for="dp-input" class="dp-edit-btn">📷</label>
-                    <input type="file" id="dp-input" accept="image/*" style="display: none;" onchange="handleImgUpload(this)">
+        <div id="screen-shop" class="screen">
+            <div class="shop-header">
+                <img id="shop-user-dp" src="" class="shop-header-dp" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=User'">
+                <div class="shop-header-icon">🔔</div>
+            </div>
+            <div class="shop-title">Choose<br>Your Favorite <span>Popularity</span></div>
+            <div class="shop-search-area">
+                <div class="shop-search-bar"><span>🔍</span><input type="text" placeholder="Search"></div>
+                <button class="shop-filter-btn">⚙️</button>
+            </div>
+            <div class="shop-categories">
+                <div class="category-pill active">All</div>
+                <div class="category-pill">Event pop</div>
+                <div class="category-pill">Silver coin pop</div>
+            </div>
+            <div class="shop-section-title">Popularity <span>See All</span></div>
+            <div class="shop-grid">
+                <div class="shop-card"><div class="card-heart" onclick="showToast('Added to Favorites ❤️')">♡</div><div class="card-blank-img"></div><div class="card-title">Coming Soon</div><div class="card-sub">Event pop</div><div class="card-bottom"><span class="card-price">00.0</span><button class="card-add-btn" onclick="showToast('Item coming soon! ✨')">+</button></div></div>
+                <div class="shop-card"><div class="card-heart" onclick="showToast('Added to Favorites ❤️')">♡</div><div class="card-blank-img"></div><div class="card-title">Coming Soon</div><div class="card-sub">Silver coin pop</div><div class="card-bottom"><span class="card-price">00.0</span><button class="card-add-btn" onclick="showToast('Item coming soon! ✨')">+</button></div></div>
+                <div class="shop-card"><div class="card-heart" onclick="showToast('Added to Favorites ❤️')">♡</div><div class="card-blank-img"></div><div class="card-title">Coming Soon</div><div class="card-sub">Event pop</div><div class="card-bottom"><span class="card-price">00.0</span><button class="card-add-btn" onclick="showToast('Item coming soon! ✨')">+</button></div></div>
+                <div class="shop-card"><div class="card-heart" onclick="showToast('Added to Favorites ❤️')">♡</div><div class="card-blank-img"></div><div class="card-title">Coming Soon</div><div class="card-sub">Silver coin pop</div><div class="card-bottom"><span class="card-price">00.0</span><button class="card-add-btn" onclick="showToast('Item coming soon! ✨')">+</button></div></div>
+            </div>
+        </div>
+
+        <div id="main-bottom-nav" class="bottom-nav">
+            <div id="nav-home" class="nav-item active" onclick="openHomeTab()">🏠</div>
+            <div id="nav-shop" class="nav-item" onclick="openShopTab()">🛍️</div>
+        </div>
+
+        <div id="screen-admin" class="screen admin-bg">
+            <div class="admin-header"><button onclick="closeAdminPanel()">&#8592; Back</button><span id="admin-title">Admin Console</span></div>
+            <div class="admin-dashboard" id="admin-grid">
+                <div class="admin-card" onclick="openAdminSection('users')"><i>🔐</i><span>User Mgt.<br><small style="color:#888;">All Data & Bans</small></span></div>
+                <div class="admin-card" onclick="openAdminSection('tickets')"><i>🎫</i><span>Support Desk<br><small style="color:#888;">Manage Tickets</small></span></div>
+                <div class="admin-card" onclick="openAdminSection('chatcontrol')"><i>🛠️</i><span>Chat Control<br><small style="color:#888;">Backup & Delete</small></span></div>
+                <div class="admin-card" onclick="openAdminSection('activity')"><i>📈</i><span>Flow Map<br><small style="color:#888;">Live Connections</small></span></div>
+                <div class="admin-card" onclick="openAdminSection('analytics')"><i>📊</i><span>Analytics<br><small style="color:#888;">Growth Stats</small></span></div>
+                <div class="admin-card" onclick="openAdminSection('broadcast')"><i>💬</i><span>Broadcast<br><small style="color:#888;">Push & Alerts</small></span></div>
+            </div>
+
+            <div id="admin-sec-users" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">Manage Users</h3><div id="admin-user-list-render"></div></div>
+            <div id="admin-sec-tickets" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">Open Support Tickets</h3><div id="admin-ticket-list-render"></div></div>
+            <div id="admin-sec-analytics" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">App Analytics</h3><div class="stat-box"><h2 id="stat-total-users">0</h2><p style="color:#aaa;">Total Registered</p></div><div class="stat-box"><h2 id="stat-active-users" style="color:#25D366;">0</h2><p style="color:#aaa;">Active Accounts</p></div></div>
+            <div id="admin-sec-broadcast" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">Send Broadcast</h3><textarea id="broadcast-msg" style="width:100%; height:120px; background:#1e1e1e; color:white; border:1px solid #333; border-radius:12px; padding:15px; font-size:15px;" placeholder="Type announcement here..."></textarea><button class="btn-success" onclick="sendAdminBroadcast()">Send to All Users 🚀</button></div>
+            <div id="admin-sec-chatcontrol" class="admin-section">
+                <h3 style="color:white; margin-bottom: 15px;">Chat Data Control</h3>
+                <div style="background: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; text-align: center;">
+                    <p style="color: #aaa; font-size: 14px; margin-bottom: 15px;">Download a complete backup of all chats safely to your device.</p>
+                    <button class="btn-success" style="margin-top:0;" onclick="backupAllChats()">📥 Download JSON Backup</button>
                 </div>
-                <div style="background: white; padding: 25px; border-radius: 24px;">
-                    <label style="font-size: 13px; color: #888;">Display Name</label>
-                    <input type="text" id="prof-name" style="margin-bottom: 20px;">
+                <div style="background: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #E50914; text-align: center;">
+                    <p style="color: #ffcccc; font-size: 14px; margin-bottom: 15px;">Warning: This will permanently delete all messages from the database.</p>
+                    <button class="btn-danger" style="margin-top:0;" onclick="clearAllChats()">⚠️ Delete All Chats</button>
+                </div>
+            </div>
+            <div id="admin-sec-activity" class="admin-section">
+                <h3 style="color:white; margin-bottom: 15px;">Live Connection Flow</h3>
+                <p style="color:#888; font-size:12px; margin-bottom:15px;">Tap on any log to open Ghost View 👻</p>
+                <div id="admin-activity-render"></div>
+            </div>
+
+            <div id="admin-sec-ghost" class="admin-section" style="padding:0; display:flex; flex-direction:column;">
+                <div style="background:#0a0a0a; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333;">
+                    <h3 id="ghost-title" style="color:white; font-size:16px; margin:0;">👻 Ghost View</h3>
+                    <button onclick="closeGhostView()" style="background:none; border:none; color:#E50914; font-weight:bold; cursor:pointer;">Close ✖</button>
+                </div>
+                <div id="ghost-chat-area" style="flex:1; background:#121212; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+        </div>
+
+        <div id="screen-profile" class="screen">
+            <div class="header"><button onclick="window.history.back()">&#8592;</button><span>Edit Profile</span></div>
+            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5; padding-top: 20px;">
+                <div class="profile-dp-container" onclick="toggleDpInput()">
+                    <img id="my-profile-img" src="">
+                    <div class="edit-dp-icon">📷</div>
+                </div>
+                <div style="background: white; padding: 25px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <div id="dp-input-section" style="display: none; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 16px; border: 1px dashed #128C7E;">
+                        <input type="text" id="prof-dp-url" placeholder="Paste image link here..." style="margin-bottom: 0;">
+                    </div>
+                    <input type="text" id="prof-name" placeholder="Display Name" style="margin-bottom: 15px;">
+                    <input type="text" id="prof-bio" placeholder="About You (Bio)" style="margin-bottom: 20px;">
                     <button class="btn-main" onclick="saveProfile()">Save Changes</button>
                     <button onclick="logout()" style="margin-top: 15px; color: #dc2626; border: none; background: none; font-weight: bold; width: 100%;">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="screen-other-profile" class="screen">
+            <div class="header"><button onclick="window.history.back()">&#8592;</button><span>User Profile</span></div>
+            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5; padding-top: 40px; align-items: center;">
+                <div class="profile-dp-container" style="width: 140px; height: 140px; border-width: 4px; cursor: default;">
+                    <img id="other-prof-img" src="">
+                </div>
+                <h2 id="other-prof-name" style="margin-top: 10px; color: #333;">Name</h2>
+                <div style="background: white; width: 100%; padding: 25px; border-radius: 20px; margin-top: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: center;">
+                    <h4 style="color: #128C7E; margin-bottom: 8px; font-size: 14px;">About</h4>
+                    <p id="other-prof-bio" style="color: #555; font-size: 15px; font-style: italic; line-height: 1.5;">...</p>
                 </div>
             </div>
         </div>
@@ -150,41 +324,35 @@
         <div id="screen-chat-room" class="screen">
             <div class="chat-room-header">
                 <button onclick="window.history.back()">&#8592;</button>
-                <div class="avatar" id="room-avatar">U</div>
+                <div class="avatar" id="room-avatar" style="width:35px; height:35px; font-size:14px; border: none; padding: 0;"></div>
                 <div id="room-name" style="flex:1;">Chat</div>
             </div>
+            
             <div class="message-area" id="message-area"></div>
+            
             <div class="input-container">
+                <div id="reply-preview-bar" class="reply-preview-bar">
+                    <div>
+                        <strong id="reply-preview-name" style="display:block; margin-bottom:2px; color:#128C7E;">Replying to...</strong>
+                        <span id="reply-preview-text" style="color:#64748b;">Text</span>
+                    </div>
+                    <button onclick="cancelReply()" style="background:none; border:none; font-size:16px; color:#94a3b8; cursor:pointer;">✖</button>
+                </div>
+
                 <div class="input-area">
-                    <button style="background:none; border:none; font-size:24px; color:#888;" onclick="openDocModal()">📎</button>
-                    <input type="text" id="msg-input" placeholder="Message..." onkeypress="handleEnter(event)">
+                    <input type="text" id="msg-input" placeholder="Message or paste GIF here...">
                     <button class="send-btn" onclick="sendMessage()">&#10148;</button>
                 </div>
             </div>
         </div>
 
-        <div id="news-overlay">
-            <div class="news-header"><button onclick="window.history.back()">&#8592;</button><span>📰 News</span></div>
-            <div class="news-content" style="padding: 20px; text-align: center;">🚧 News feature under development...</div>
-        </div>
-
-        <div id="doc-modal">
-            <div class="modal-content">
-                <h3>🗂️ Send File</h3>
-                <input type="text" id="doc-name" style="width:100%; padding:12px; margin-bottom:10px;" placeholder="File Name">
-                <input type="text" id="doc-url" style="width:100%; padding:12px; margin-bottom:15px;" placeholder="Drive Link">
-                <button class="btn-main" onclick="sendDocument()">Send</button>
-                <button onclick="closeDocModal()" style="margin-top:10px; background:none; border:none; color:#555;">Cancel</button>
-            </div>
-        </div>
-
-        <div id="feedback-modal">
-            <div class="modal-content">
-                <h3>📮 Letter Box</h3>
-                <textarea id="feedback-text" style="width: 100%; height: 100px; padding: 10px; margin-bottom: 10px; border-radius: 12px;"></textarea>
-                <button class="btn-main" onclick="submitFeedback()">Drop 💌</button>
-                <button onclick="closeFeedbackModal()" style="margin-top:10px; background:none; border:none; color:#555;">Cancel</button>
-            </div>
+        <div class="menu-overlay" id="menu-overlay" onclick="closeMsgMenu()"></div>
+        <div id="msg-action-menu">
+            <button class="action-btn" onclick="actionReply()">↩️ Reply to Message</button>
+            <button class="action-btn" onclick="actionReact()">❤️ React to Message</button>
+            <button class="action-btn" onclick="actionCopy()">📋 Copy Text</button>
+            <button class="action-btn" id="btn-edit-msg" onclick="actionEdit()">✏️ Edit Message</button>
+            <button class="action-btn danger" id="btn-delete-msg" onclick="actionDelete()">🗑️ Delete Message</button>
         </div>
 
         <div id="toast"></div>
@@ -192,178 +360,388 @@
 
     <script>
         const firebaseConfig = { databaseURL: "https://avengers-chat-a32e2-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        let users = [];
-        let currentUser = null;
-        let activeChatId = null;
+        let users = []; let ticketsData = {}; let activityLogs = [];
+        let currentUser = null; let activeChatId = null; let activeChatName = null; 
+        
+        // Chat 2.0 State Variables
         let currentChatListener = null;
-        const localSessionToken = localStorage.getItem('btd_session_token') || Math.random().toString(36).substring(2);
-        localStorage.setItem('btd_session_token', localSessionToken);
+        let selectedMsgKey = null;
+        let selectedMsgText = null;
+        let selectedMsgSenderId = null;
+        let replyTargetData = null; // Stores info if replying
+        let isEditingMsg = false;
 
         window.history.replaceState({ screen: 'screen-auth' }, '');
 
-        window.onload = () => {
+        document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => { splash.style.display = 'none'; }, 500);
-            }, 2000);
+                if (splash) { splash.style.opacity = '0'; setTimeout(() => { splash.style.display = 'none'; }, 500); }
+            }, 1200);
+
+            const msgInput = document.getElementById('msg-input');
+            if(msgInput) {
+                msgInput.addEventListener('paste', function(e) {
+                    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].type.indexOf("image") !== -1) {
+                            const blob = items[i].getAsFile(); const reader = new FileReader();
+                            showToast("Sending your GIF... ✨");
+                            reader.onload = function(event) { sendImageMessage(event.target.result); };
+                            reader.readAsDataURL(blob); e.preventDefault(); return; 
+                        }
+                    }
+                });
+            }
 
             const savedSession = localStorage.getItem('btd_session');
             if(savedSession) {
                 const creds = JSON.parse(savedSession);
-                document.getElementById('mobile').value = creds.mobile;
-                document.getElementById('password').value = creds.pass;
-                setTimeout(() => handleAuth(), 800);
+                if(document.getElementById('login-mobile')) document.getElementById('login-mobile').value = creds.mobile;
+                if(document.getElementById('login-password')) document.getElementById('login-password').value = creds.pass;
+                setTimeout(() => { if(typeof showLoginView === "function") showLoginView(); if(typeof handleLogin === "function") handleLogin(); }, 400);
             }
-        };
+        });
 
         db.ref('users').on('value', snapshot => {
             const data = snapshot.val();
-            if (data) {
-                users = Object.values(data).filter(u => u && u.mobile && u.name);
-                if(currentUser) {
-                    const myData = users.find(u => u.mobile === currentUser.mobile);
-                    if(myData && myData.sessionToken && myData.sessionToken !== localSessionToken) {
-                        alert("Logged in on another device."); logout();
-                    }
-                    if(myData && myData.dp) document.getElementById('my-profile-img').src = myData.dp;
-                }
-            } else { users = []; }
+            if (data) { users = Object.values(data).filter(u => u && u.mobile && u.name); } else { users = []; }
             if(currentUser && document.getElementById('screen-chat').classList.contains('active')) renderNormalChatList();
         });
+        db.ref('tickets').on('value', snapshot => { ticketsData = snapshot.val() || {}; if(document.getElementById('admin-sec-tickets').style.display === 'block') renderAdminTickets(); });
+        db.ref('activity_logs').on('value', snapshot => { const data = snapshot.val(); activityLogs = data ? Object.values(data) : []; if(document.getElementById('admin-sec-activity').style.display === 'block') renderActivityLogs(); });
 
-        window.addEventListener('popstate', (e) => {
-            const newsOverlay = document.getElementById('news-overlay');
-            if(newsOverlay.classList.contains('active')) { newsOverlay.classList.remove('active'); return; }
-            const target = e.state ? e.state.screen : (currentUser ? 'screen-chat' : 'screen-auth');
-            switchScreen(target, true);
-        });
+        window.addEventListener('popstate', (e) => { const target = e.state ? e.state.screen : (currentUser ? 'screen-chat' : 'screen-auth'); switchScreen(target, true); });
 
         function switchScreen(screenId, isBack = false) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
             document.getElementById(screenId).classList.add('active');
+            
+            const bottomNav = document.getElementById('main-bottom-nav');
+            if(screenId === 'screen-chat' || screenId === 'screen-shop') { bottomNav.style.display = 'flex'; } else { bottomNav.style.display = 'none'; }
             if(!isBack) window.history.pushState({ screen: screenId }, '', '#' + screenId);
         }
 
-        function handleImgUpload(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        let width = img.width, height = img.height;
-                        if (width > height) { if (width > 200) { height *= 200 / width; width = 200; } }
-                        else { if (height > 200) { width *= 200 / height; height = 200; } }
-                        canvas.width = width; canvas.height = height;
-                        ctx.drawImage(img, 0, 0, width, height);
-                        db.ref('users/' + currentUser.mobile).update({ dp: canvas.toDataURL('image/jpeg', 0.7) });
-                        showToast("Profile Picture Updated! ✨");
-                    };
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+        function openHomeTab() { document.getElementById('nav-home').classList.add('active'); document.getElementById('nav-shop').classList.remove('active'); switchScreen('screen-chat'); if(currentUser) renderNormalChatList(); }
+        function openShopTab() { document.getElementById('nav-shop').classList.add('active'); document.getElementById('nav-home').classList.remove('active'); if(currentUser) { document.getElementById('shop-user-dp').src = getAvatarUrl(currentUser); } switchScreen('screen-shop'); }
+
+        // --- AUTH & TICKETS ---
+        function hideAllAuthViews() { document.getElementById('auth-main-view').style.display = 'none'; document.getElementById('auth-login-view').style.display = 'none'; document.getElementById('auth-signup-view').style.display = 'none'; document.getElementById('auth-ticket-create-view').style.display = 'none'; document.getElementById('auth-ticket-success-view').style.display = 'none'; document.getElementById('auth-ticket-status-view').style.display = 'none'; }
+        function showAuthMain() { hideAllAuthViews(); document.getElementById('auth-main-view').style.display = 'flex'; }
+        function showLoginView() { hideAllAuthViews(); document.getElementById('auth-login-view').style.display = 'flex'; }
+        function showSignupView() { hideAllAuthViews(); document.getElementById('auth-signup-view').style.display = 'flex'; }
+        function showTicketCreateView() { hideAllAuthViews(); document.getElementById('auth-ticket-create-view').style.display = 'flex'; }
+        function showTicketStatusView() { hideAllAuthViews(); document.getElementById('auth-ticket-status-view').style.display = 'flex'; document.getElementById('ticket-result-area').style.display = 'none'; }
+
+        function generateTicket() {
+            const name = document.getElementById('ticket-name').value.trim(); const mobile = document.getElementById('ticket-mobile').value.trim(); const issue = document.getElementById('ticket-issue').value.trim();
+            if(!name || !mobile || !issue) { showToast("Please fill all details to help us! ✨"); return; }
+            const code = 'BTD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+            db.ref('tickets/' + code).set({ name: name, mobile: mobile, issue: issue, status: 'Open', reply: '', timestamp: new Date().toLocaleString() });
+            hideAllAuthViews(); document.getElementById('generated-ticket-code').innerText = code; document.getElementById('auth-ticket-success-view').style.display = 'flex';
+        }
+        function copyTicketCode() { const code = document.getElementById('generated-ticket-code').innerText; navigator.clipboard.writeText(code).then(() => { showToast("Code copied to clipboard! 🌸"); setTimeout(showAuthMain, 1000); }); }
+        function checkTicketStatus() {
+            let code = document.getElementById('check-ticket-code').value.trim().toUpperCase(); if(!code) { showToast("Please enter a valid code! ✨"); return; } if(!code.startsWith('BTD-')) code = 'BTD-' + code; 
+            db.ref('tickets/' + code).once('value').then(snapshot => {
+                const ticket = snapshot.val(); const resultArea = document.getElementById('ticket-result-area'); const replyText = document.getElementById('ticket-reply-text');
+                resultArea.style.display = 'block';
+                if(!ticket) { replyText.innerText = "Ticket not found. Please check your code. 🚫"; replyText.style.color = "#E50914"; } else if(ticket.reply === "") { replyText.innerText = "⏳ In Progress... Our Admin is looking into it."; replyText.style.color = "#f59e0b"; } else { replyText.innerText = "✨ " + ticket.reply; replyText.style.color = "#128C7E"; }
+            });
         }
 
-        function handleAuth() {
-            const mobile = document.getElementById('mobile').value, pass = document.getElementById('password').value;
-            const nameBox = document.getElementById('name-box'), username = document.getElementById('username').value;
-            if (!mobile || !pass) return;
-
-            const existingUser = users.find(u => u.mobile === mobile);
-            if (mobile === 'ankitankit' && pass === 'ankitankit') { loginComplete({ name: 'Admin (Ankit)', mobile: 'ankitankit', isAdmin: true }, pass); return; }
-
-            if (existingUser) {
-                if (existingUser.pass === pass) loginComplete(existingUser, pass);
-                else alert("Wrong password");
-            } else {
-                if (nameBox.style.display === 'none') { nameBox.style.display = 'block'; }
-                else if (username.trim() !== "") {
-                    const newUser = { name: username.trim(), mobile: mobile, pass: pass, isActive: true };
-                    db.ref('users/' + mobile).set(newUser); loginComplete(newUser, pass);
-                }
-            }
+        function handleLogin() {
+            const mobile = document.getElementById('login-mobile').value.trim(); const pass = document.getElementById('login-password').value.trim();
+            if (!mobile || !pass) { showToast("Please enter your details. ✨"); return; }
+            if (mobile === 'ankitankit' && pass === 'ankitankit') { loginComplete({ name: 'Super Admin', mobile: 'ankitankit', isAdmin: true, role: 'admin' }, pass); return; }
+            const existingUser = users.find(u => String(u.mobile) === String(mobile));
+            if (existingUser) { if(existingUser.isBanned) { showToast("Your account has been restricted. 🚫"); return; } if (existingUser.pass === pass) { loginComplete(existingUser, pass); } else { showToast("Oops! Wrong password. 🌸"); } } else { showToast("Account not found. Please register first. 🌸"); }
         }
+
+        function handleSignup() {
+            const name = document.getElementById('signup-name').value.trim(); const mobile = document.getElementById('signup-mobile').value.trim(); const pass = document.getElementById('signup-password').value.trim();
+            if (!name || !mobile || !pass) { showToast("Please fill all compulsory fields. ✨"); return; }
+            const isDeviceRegistered = localStorage.getItem('btd_device_registered');
+            if (isDeviceRegistered === 'true') { showToast("You can only create one account per device. 🌸"); return; }
+            const existingUser = users.find(u => String(u.mobile) === String(mobile));
+            if (existingUser) { showToast("This number is already registered! Please log in. 🌸"); return; }
+            const newUser = { name: name, mobile: mobile, pass: pass, dpUrl: "", bio: "Hey there! ✨", role: "user", isBanned: false };
+            db.ref('users/' + mobile).set(newUser); localStorage.setItem('btd_device_registered', 'true');
+            showToast("Account created beautifully! ✨"); setTimeout(() => { loginComplete(newUser, pass); }, 800);
+        }
+
+        function getAvatarUrl(user) { if(user && user.dpUrl && user.dpUrl.trim() !== "") return user.dpUrl; let seedName = user && user.name ? user.name : 'Guest'; return `https://api.dicebear.com/7.x/notionists/svg?seed=${seedName}`; }
 
         function loginComplete(user, pass) {
             currentUser = user; localStorage.setItem('btd_session', JSON.stringify({mobile: user.mobile, pass: pass}));
-            db.ref('users/' + user.mobile).update({ sessionToken: localSessionToken });
-            document.getElementById('welcome-text').innerText = user.isAdmin ? "Supervisor" : `Hi, ${user.name.split(' ')[0]}`;
-            document.getElementById('prof-name').value = user.name;
-            if(user.dp) document.getElementById('my-profile-img').src = user.dp;
-            renderNormalChatList(); switchScreen('screen-chat');
+            document.getElementById('welcome-text').innerText = user.isAdmin ? "Admin Console" : `Hi, ${user.name.split(' ')[0]}`;
+            document.getElementById('prof-name').value = user.name || ""; document.getElementById('prof-dp-url').value = user.dpUrl || ""; document.getElementById('prof-bio').value = user.bio || "Hey there! ✨"; document.getElementById('my-profile-img').src = getAvatarUrl(user);
+            if (user.isAdmin || user.role === 'admin') { document.getElementById('admin-btn').style.display = 'block'; document.getElementById('screen-chat').classList.add('admin-theme'); } else { document.getElementById('admin-btn').style.display = 'none'; document.getElementById('screen-chat').classList.remove('admin-theme'); }
+            openHomeTab();
         }
 
         function logout() { localStorage.removeItem('btd_session'); location.reload(); }
 
         function renderNormalChatList() {
             const list = document.getElementById('dynamic-user-list');
-            list.innerHTML = users.filter(u => u.mobile !== currentUser.mobile && u.mobile !== 'ankitankit').map(u => `
-                <div class="chat-item" onclick="openChatRoom('${[currentUser.mobile, u.mobile].sort().join('_')}', '${u.name}')">
-                    <div class="avatar" style="${u.dp ? 'border: 2px solid #25D366;' : ''}">${u.dp ? `<img src="${u.dp}">` : u.name.charAt(0)}</div>
-                    <div class="chat-info"><div class="chat-name">${u.name}</div><div class="chat-msg">Tap to chat...</div></div>
+            list.innerHTML = users.filter(u => String(u.mobile) !== String(currentUser.mobile) && String(u.mobile) !== 'ankitankit' && !u.isBanned).map(u => `
+                <div class="chat-item" onclick="openChatRoom('${[String(currentUser.mobile), String(u.mobile)].sort().join('_')}', '${u.name}', '${getAvatarUrl(u)}')">
+                    <div class="avatar"><img src="${getAvatarUrl(u)}"></div><div class="chat-info" style="border-bottom: none;"><div class="chat-name">${u.name}</div><div class="chat-msg">Tap to chat...</div></div>
                 </div>
             `).join('');
         }
 
-        function openChatRoom(chatId, chatName) {
-            activeChatId = chatId; document.getElementById('room-name').innerText = chatName;
-            const targetUser = users.find(u => u.name === chatName);
+        // --- CHAT ENGINE 2.0 (Reply, Edit, Delete, React) ---
+        function openChatRoom(chatId, chatName, avatarUrl) {
+            activeChatId = chatId; activeChatName = chatName; cancelReply(); // reset state
+            document.getElementById('room-name').innerText = chatName; 
             const avatarDiv = document.getElementById('room-avatar');
-            
-            if (chatId === 'live') {
-                avatarDiv.innerHTML = '🌐';
-                avatarDiv.style.background = 'linear-gradient(135deg, #cbd5e1, #64748b)';
-                avatarDiv.style.color = 'white';
-                avatarDiv.style.border = 'none';
-            } else {
-                avatarDiv.innerHTML = (targetUser && targetUser.dp) ? `<img src="${targetUser.dp}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : chatName.charAt(0);
-                avatarDiv.style.background = 'rgba(255,255,255,0.15)';
-            }
-            
-            document.getElementById('message-area').innerHTML = ''; switchScreen('screen-chat-room');
-            loadMessages();
+            if(chatId === 'live') { avatarDiv.innerHTML = '🌐'; avatarDiv.style.background = 'linear-gradient(135deg, #cbd5e1, #64748b)'; }
+            else { avatarDiv.innerHTML = `<img src="${avatarUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`; avatarDiv.style.background = 'none'; }
+            document.getElementById('message-area').innerHTML = ''; switchScreen('screen-chat-room'); loadMessages();
         }
 
         function loadMessages() {
-            if(currentChatListener) db.ref('chats/' + activeChatId).off('child_added', currentChatListener);
-            currentChatListener = db.ref('chats/' + activeChatId).on('child_added', snapshot => {
-                const msg = snapshot.val();
-                const isMe = msg.senderId === currentUser.mobile;
-                const msgArea = document.getElementById('message-area');
-                const div = document.createElement('div');
-                div.className = `msg ${isMe ? 'sent' : 'received'}`;
-                div.innerHTML = `${!isMe && activeChatId==='live' ? `<span style="font-size: 11px; font-weight: bold; color: #128C7E; display:block; margin-bottom:2px;">${msg.senderName}</span>` : ''}${msg.text}<span style="font-size: 10px; color: rgba(0,0,0,0.45); float: right; margin: 6px 0 -6px 10px;">${msg.time}</span>`;
-                msgArea.appendChild(div); msgArea.scrollTop = msgArea.scrollHeight;
+            const msgArea = document.getElementById('message-area');
+            msgArea.innerHTML = '';
+            
+            // Using .on('value') for robust Edit/Delete syncing in single-file setup
+            if(currentChatListener) db.ref('chats/' + activeChatId).off('value', currentChatListener);
+            
+            currentChatListener = db.ref('chats/' + activeChatId).on('value', snapshot => {
+                msgArea.innerHTML = ''; // Clear and re-render completely to ensure perfect state
+                const data = snapshot.val();
+                if(!data) return;
+
+                Object.keys(data).forEach(key => {
+                    const msg = data[key];
+                    if(msg.init) return; // Skip initializer
+
+                    const isMe = String(msg.senderId) === String(currentUser.mobile); 
+                    const div = document.createElement('div');
+                    
+                    // Attach context menu opener
+                    div.onclick = () => openMsgMenu(key, msg.text, msg.senderId, msg.senderName, msg.type);
+                    
+                    let msgBody = msg.type === 'image' ? `<img src="${msg.text}">` : msg.text;
+
+                    if (msg.isAdminAlert) { 
+                        div.className = 'msg admin-alert'; div.innerHTML = `📢 ${msgBody}`; 
+                    } else if (msg.isSystemMsg) {
+                        div.className = 'msg'; div.style.cssText = 'background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-left: 4px solid #64748b; align-self: center; text-align: center; font-size: 13px; font-weight: 500; padding: 10px 15px; border-radius: 8px; margin: 6px 0; width: 85%;';
+                        div.innerHTML = `🛡️ <b style="color: #334155;">System Admin</b><br><span style="color: #1e293b; display:inline-block; margin-top:4px;">${msgBody}</span><br><span style="font-size:10px; color:#94a3b8; font-style:italic; display:inline-block; margin-top:6px;">(This message cannot be deleted)</span>`;
+                    } else { 
+                        div.className = `msg ${isMe ? 'sent' : 'received'}`; 
+                        
+                        let headerHTML = '';
+                        // Group chat sender name & DP
+                        if(!isMe && activeChatId === 'live') {
+                            const senderUser = users.find(u => String(u.mobile) === String(msg.senderId)); const senderDp = getAvatarUrl(senderUser || {name: msg.senderName});
+                            headerHTML += `<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; padding-bottom:5px; border-bottom:1px solid #f0f0f0;"><img src="${senderDp}" style="width:24px; height:24px; border-radius:50%; border:1px solid #25D366; object-fit:cover;"><span style="font-size: 12px; font-weight: bold; color: #128C7E;">${msg.senderName}</span></div>`;
+                        }
+
+                        // Reply Preview Box (if this message is a reply)
+                        if(msg.replyTo) {
+                            let replyText = msg.replyTo.text;
+                            if(msg.replyTo.type === 'image') replyText = "📷 Photo";
+                            headerHTML += `<div class="replied-box"><div class="replied-name">${msg.replyTo.name}</div><div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${replyText}</div></div>`;
+                        }
+
+                        // Footer (Time, Edited tag, Reactions)
+                        let footerHTML = `<div class="msg-time">${msg.isEdited ? '<span class="msg-edited">(edited)</span>' : ''} ${msg.time} ${isMe ? '✓' : ''}</div>`;
+                        if(msg.reactions && msg.reactions > 0) {
+                            footerHTML += `<div class="msg-reaction">❤️ ${msg.reactions}</div>`;
+                        }
+
+                        div.innerHTML = `${headerHTML}${msgBody}${footerHTML}`; 
+                    }
+                    msgArea.appendChild(div);
+                });
+                msgArea.scrollTop = msgArea.scrollHeight;
             });
         }
 
-        function sendMessage() {
-            const text = document.getElementById('msg-input').value.trim();
-            if(!text) return;
-            db.ref('chats/' + activeChatId).push({ senderId: currentUser.mobile, senderName: currentUser.name, text: text, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
-            document.getElementById('msg-input').value = '';
+        // --- MESSAGE ACTIONS (MENU) ---
+        function openMsgMenu(key, text, senderId, senderName, type) {
+            selectedMsgKey = key;
+            selectedMsgText = text;
+            selectedMsgSenderId = senderId;
+            
+            const isMe = String(senderId) === String(currentUser.mobile);
+            const isAdmin = (currentUser.isAdmin || currentUser.role === 'admin');
+
+            // Hide/Show Edit & Delete based on permissions
+            document.getElementById('btn-edit-msg').style.display = (isMe && type !== 'image') ? 'flex' : 'none';
+            document.getElementById('btn-delete-msg').style.display = (isMe || isAdmin) ? 'flex' : 'none';
+
+            // Set Data for Replying
+            replyTargetData = { name: senderName, text: text, type: type };
+
+            document.getElementById('menu-overlay').style.display = 'block';
+            document.getElementById('msg-action-menu').classList.add('active');
         }
 
-        function openProfile() { switchScreen('screen-profile'); }
-        function saveProfile() {
-            const newName = document.getElementById('prof-name').value.trim();
-            if(newName) { db.ref('users/' + currentUser.mobile).update({name: newName}); showToast("Name Updated!"); window.history.back(); }
+        function closeMsgMenu() {
+            document.getElementById('menu-overlay').style.display = 'none';
+            document.getElementById('msg-action-menu').classList.remove('active');
         }
-        function openDocModal() { document.getElementById('doc-modal').style.display = 'flex'; }
-        function closeDocModal() { document.getElementById('doc-modal').style.display = 'none'; }
-        function openFeedbackModal() { document.getElementById('feedback-modal').style.display = 'flex'; }
-        function closeFeedbackModal() { document.getElementById('feedback-modal').style.display = 'none'; }
-        function submitFeedback() {
-            const msg = document.getElementById('feedback-text').value.trim();
-            if(!msg) return;
-            db.ref('chats/admin_inbox').push({ senderId: currentUser.mobile, senderName: currentUser.name, text: `[Feedback] ${msg}`, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) });
-            showToast("Dropped in the Letterbox! 📮💛"); closeFeedbackModal();
+
+        function actionCopy() {
+            navigator.clipboard.writeText(selectedMsgText).then(() => { showToast("Text Copied! 🌸"); });
+            closeMsgMenu();
+        }
+
+        function actionDelete() {
+            if(confirm("Delete this message for everyone?")) {
+                db.ref('chats/' + activeChatId + '/' + selectedMsgKey).remove();
+                showToast("Message deleted ✨");
+            }
+            closeMsgMenu();
+        }
+
+        function actionEdit() {
+            document.getElementById('msg-input').value = selectedMsgText;
+            isEditingMsg = true;
+            document.getElementById('msg-input').focus();
+            showToast("Editing message...");
+            closeMsgMenu();
+        }
+
+        function actionReact() {
+            const ref = db.ref('chats/' + activeChatId + '/' + selectedMsgKey + '/reactions');
+            ref.once('value').then(snap => {
+                let count = snap.val() || 0;
+                ref.set(count + 1);
+            });
+            closeMsgMenu();
+        }
+
+        function actionReply() {
+            const bar = document.getElementById('reply-preview-bar');
+            bar.style.display = 'flex';
+            document.getElementById('reply-preview-name').innerText = `Replying to ${replyTargetData.name}`;
+            document.getElementById('reply-preview-text').innerText = replyTargetData.type === 'image' ? '📷 Photo' : replyTargetData.text;
+            document.getElementById('msg-input').focus();
+            closeMsgMenu();
+        }
+
+        function cancelReply() {
+            replyTargetData = null;
+            document.getElementById('reply-preview-bar').style.display = 'none';
+        }
+
+        // SEND / SUBMIT LOGIC
+        function sendImageMessage(base64data) { 
+            const isSystemAdmin = (currentUser.isAdmin || currentUser.role === 'admin'); 
+            
+            const payload = { senderId: String(currentUser.mobile), senderName: currentUser.name, text: base64data, type: 'image', isAdminAlert: false, isSystemMsg: isSystemAdmin, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
+            if(replyTargetData) payload.replyTo = replyTargetData;
+
+            db.ref('chats/' + activeChatId).push(payload); 
+            cancelReply();
+            
+            const timestampStr = new Date().toLocaleString(); db.ref('activity_logs').push({ fromUser: currentUser.name, toUser: activeChatName, chatId: activeChatId, time: timestampStr }); 
+        }
+        
+        function sendMessage() { 
+            const text = document.getElementById('msg-input').value.trim(); 
+            if(!text) return; 
+
+            // If Editing
+            if(isEditingMsg && selectedMsgKey) {
+                db.ref('chats/' + activeChatId + '/' + selectedMsgKey).update({ text: text, isEdited: true });
+                isEditingMsg = false;
+                selectedMsgKey = null;
+                document.getElementById('msg-input').value = '';
+                return;
+            }
+
+            // Normal Send
+            const isSystemAdmin = (currentUser.isAdmin || currentUser.role === 'admin'); 
+            const payload = { senderId: String(currentUser.mobile), senderName: currentUser.name, text: text, type: 'text', isAdminAlert: false, isSystemMsg: isSystemAdmin, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
+            
+            if(replyTargetData) payload.replyTo = replyTargetData;
+
+            db.ref('chats/' + activeChatId).push(payload); 
+            document.getElementById('msg-input').value = ''; 
+            cancelReply();
+
+            const timestampStr = new Date().toLocaleString(); db.ref('activity_logs').push({ fromUser: currentUser.name, toUser: activeChatName, chatId: activeChatId, time: timestampStr }); 
+        }
+
+        function viewUserProfile(mobile) {
+            if(String(mobile) === 'admin' || String(mobile) === 'ankitankit') return;
+            const user = users.find(u => String(u.mobile) === String(mobile)); 
+            if(!user) { showToast("User details not found! 🌸"); return; }
+            document.getElementById('other-prof-img').src = getAvatarUrl(user); document.getElementById('other-prof-name').innerText = user.name; document.getElementById('other-prof-bio').innerText = user.bio || "Hey there! I am using BTD Community. ✨"; switchScreen('screen-other-profile');
+        }
+
+        // --- ADMIN PANEL LOGIC ---
+        function openAdminPanel() { switchScreen('screen-admin'); document.getElementById('admin-grid').style.display = 'grid'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none'); document.getElementById('admin-title').innerText = "Admin Tools"; }
+        function closeAdminPanel() { if (document.getElementById('admin-grid').style.display === 'none') openAdminPanel(); else window.history.back(); }
+        
+        function openAdminSection(section) {
+            document.getElementById('admin-grid').style.display = 'none'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
+            if (section === 'users') { document.getElementById('admin-title').innerText = "User Management"; document.getElementById('admin-sec-users').style.display = 'block'; renderAdminUsers(); } else if (section === 'tickets') { document.getElementById('admin-title').innerText = "Support Desk"; document.getElementById('admin-sec-tickets').style.display = 'block'; renderAdminTickets(); } else if (section === 'analytics') { document.getElementById('admin-title').innerText = "Analytics"; document.getElementById('admin-sec-analytics').style.display = 'block'; document.getElementById('stat-total-users').innerText = users.length; document.getElementById('stat-active-users').innerText = users.filter(u => !u.isBanned).length; } else if (section === 'broadcast') { document.getElementById('admin-title').innerText = "Broadcast Message"; document.getElementById('admin-sec-broadcast').style.display = 'block'; } else if (section === 'chatcontrol') { document.getElementById('admin-title').innerText = "Chat Control"; document.getElementById('admin-sec-chatcontrol').style.display = 'block'; } else if (section === 'activity') { document.getElementById('admin-title').innerText = "Flow Map"; document.getElementById('admin-sec-activity').style.display = 'block'; renderActivityLogs(); }
+        }
+
+        function backupAllChats() { db.ref('chats').once('value').then(snap => { const data = snap.val(); if(!data) { showToast("No chats found to backup. 🌸"); return; } const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `BTD_Chat_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); showToast("Backup Downloaded Successfully! ✨"); }); }
+        function clearAllChats() { if(confirm("⚠️ Alert: Are you sure you want to permanently delete ALL chats? This action cannot be reversed!")) { db.ref('chats').remove().then(() => { db.ref('chats/live').set({ init: true }); showToast("All chats wiped clean successfully! 🌸"); }); } }
+
+        function renderActivityLogs() {
+            const list = document.getElementById('admin-activity-render'); if (activityLogs.length === 0) { list.innerHTML = "<p style='color:#888;'>No connections made yet. 🌸</p>"; return; }
+            const recentLogs = activityLogs.slice(-50).reverse();
+            list.innerHTML = recentLogs.map(log => `
+                <div class="flow-log-item" onclick="openGhostView('${log.chatId}', '${log.fromUser} & ${log.toUser}')">
+                    <span class="flow-log-time">${log.time}</span><strong>${log.fromUser}</strong> <span class="flow-arrow">➔</span> <strong style="color:white;">${log.toUser}</strong>
+                </div>
+            `).join('');
+        }
+
+        function openGhostView(chatId, title) {
+            document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none'); document.getElementById('admin-sec-ghost').style.display = 'flex'; document.getElementById('ghost-title').innerText = "👻 " + title;
+            const area = document.getElementById('ghost-chat-area'); area.innerHTML = '<p style="color:#888; text-align:center;">Intercepting messages...</p>';
+            db.ref('chats/' + chatId).off();
+            db.ref('chats/' + chatId).on('value', snapshot => {
+                area.innerHTML = ''; const data = snapshot.val(); if(!data) { area.innerHTML = '<p style="color:#888; text-align:center; margin-top:20px;">No messages found in this room yet.</p>'; return; }
+                Object.values(data).forEach(msg => {
+                    if(msg.init) return; const div = document.createElement('div');
+                    let ghostBody = msg.type === 'image' ? `<img src="${msg.text}" style="max-width:100%; border-radius:8px; margin-top:5px; display:block;">` : msg.text;
+                    if(msg.isAdminAlert || msg.isSystemMsg) { div.style.cssText = "background:#1e293b; color:#94a3b8; padding:10px; border-radius:8px; border-left:3px solid #64748b; font-size:12px; font-style:italic;"; div.innerHTML = `🛡️ System Admin<br>${ghostBody}`; } else { div.style.cssText = "background:#1e1e1e; color:#ddd; padding:10px; border-radius:8px; border-left:3px solid #E50914; font-size:13px; word-break:break-word;"; div.innerHTML = `<span style="color:#25D366; font-weight:bold; font-size:11px;">${msg.senderName}</span><br>${ghostBody}`; }
+                    area.appendChild(div);
+                });
+                area.scrollTop = area.scrollHeight;
+            });
+        }
+        function closeGhostView() { db.ref('chats/').off(); openAdminSection('activity'); }
+
+        function renderAdminTickets() {
+            const list = document.getElementById('admin-ticket-list-render'); const ticketKeys = Object.keys(ticketsData);
+            if (ticketKeys.length === 0) { list.innerHTML = "<p style='color:#888;'>No support tickets yet. 🌸</p>"; return; }
+            list.innerHTML = ticketKeys.reverse().map(key => {
+                const t = ticketsData[key];
+                return `<div class="admin-list-item" style="${t.reply ? 'border-color: #25D366; opacity: 0.7;' : 'border-color: #f59e0b;'}"><div style="width: 100%; margin-bottom: 8px;"><span style="color:#E50914; font-size:12px; font-weight:bold; float:right;">${key}</span><strong style="color:white; font-size:16px;">${t.name}</strong> <span style="color:#888; font-size:12px;">(${t.mobile})</span></div><div style="background: #111; padding: 10px; border-radius: 8px; color: #ddd; font-size: 14px; margin-bottom: 10px;">${t.issue}</div>${t.reply ? `<p style="color:#25D366; font-size:13px; font-weight:bold;">✅ Replied: ${t.reply}</p>` : `<div style="display:flex; gap:10px;"><input type="text" id="reply-input-${key}" placeholder="Type reply..." style="flex:1; padding:10px; border-radius:8px; border:none; background:#222; color:white; font-size:13px;"><button class="btn-success" style="margin:0; width:auto; padding:10px 15px; border-radius:8px;" onclick="sendTicketReply('${key}')">Send</button></div>`}</div>`;
+            }).join('');
+        }
+        function sendTicketReply(ticketId) { const reply = document.getElementById(`reply-input-${ticketId}`).value.trim(); if(!reply) { showToast("Please type a reply first! 🌸"); return; } db.ref(`tickets/${ticketId}`).update({ reply: reply, status: 'Resolved' }); showToast("Reply sent to user! ✨"); }
+        function renderAdminUsers() {
+            const list = document.getElementById('admin-user-list-render'); if (users.length === 0) { list.innerHTML = "<p style='color:#888;'>No users found.</p>"; return; }
+            list.innerHTML = users.map(u => {
+                let allDataHtml = ''; for (let key in u) { if(key !== 'dpUrl') allDataHtml += `<div style="font-size:13px; color:#ddd; margin-bottom:5px; padding-bottom:4px; border-bottom: 1px solid #2a2a2a;"><span style="color:#E50914; font-weight:600; text-transform: capitalize; display:inline-block; width: 80px;">${key}:</span> <span style="color:#fff;">${u[key]}</span></div>`; }
+                return `<div class="admin-list-item" style="${u.isBanned ? 'border-color: #555; opacity: 0.6;' : ''}"><div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;"><strong style="color:white; font-size:16px;">${u.name}</strong><button class="btn-danger-small" onclick="toggleBanUser('${u.mobile}', ${u.isBanned})" style="${u.isBanned ? 'background:#555;' : ''}">${u.isBanned ? 'Unban' : 'Ban'}</button></div><div style="width: 100%; background: #111; padding: 12px; border-radius: 8px; border: 1px solid #333;">${allDataHtml}</div></div>`;
+            }).join('');
+        }
+        function toggleBanUser(mobile, isCurrentlyBanned) { if(String(mobile) === 'ankitankit') { showToast("Super Admin cannot be banned! 😅"); return; } db.ref('users/' + mobile).update({ isBanned: !isCurrentlyBanned }); showToast(isCurrentlyBanned ? "User Unbanned! ✅" : "User Banned! 🚫"); setTimeout(renderAdminUsers, 500); }
+        function sendAdminBroadcast() { const msg = document.getElementById('broadcast-msg').value.trim(); if(!msg) { showToast("Please type a message first! 🌸"); return; } db.ref('chats/live').push({ senderId: 'admin', senderName: 'SYSTEM', text: msg, isAdminAlert: true }); showToast("Broadcast Sent Successfully! 🚀"); document.getElementById('broadcast-msg').value = ''; setTimeout(closeAdminPanel, 1000); }
+
+        function openProfile() { switchScreen('screen-profile'); }
+        function toggleDpInput() { const dpSection = document.getElementById('dp-input-section'); dpSection.style.display = dpSection.style.display === 'none' ? 'block' : 'none'; }
+        function saveProfile() { 
+            const newName = document.getElementById('prof-name').value.trim(); const newDpUrl = document.getElementById('prof-dp-url').value.trim(); const newBio = document.getElementById('prof-bio').value.trim();
+            if(newName) { db.ref('users/' + currentUser.mobile).update({ name: newName, dpUrl: newDpUrl, bio: newBio }); currentUser.name = newName; currentUser.dpUrl = newDpUrl; currentUser.bio = newBio; document.getElementById('my-profile-img').src = getAvatarUrl(currentUser); showToast("Profile Updated! 🌸"); window.history.back(); } 
         }
         function showToast(m) { const t = document.getElementById('toast'); t.innerText=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
     </script>
