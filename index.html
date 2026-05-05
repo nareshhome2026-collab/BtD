@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BTD Community Edition 2.1</title>
+    <title>BTD Community Edition 3.0</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -14,7 +14,7 @@
         html, body { height: 100%; overflow: hidden; background-color: #f0f2f5; overscroll-behavior: none; -webkit-overscroll-behavior: none; }
         body { display: flex; justify-content: center; align-items: center; }
         
-        .app-container { background: #ffffff; width: 100%; height: 100%; max-width: 420px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .app-container { background: #ffffff; width: 100%; height: 100%; max-width: 420px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: background 0.3s; }
         @media (min-width: 500px) { .app-container { height: 95vh; border-radius: 24px; } }
 
         #splash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #25D366, #128C7E); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; transition: opacity 0.5s ease; }
@@ -31,7 +31,7 @@
         .screen { display: none; flex-direction: column; height: 100%; width: 100%; background: #ffffff; opacity: 0; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s; }
         .screen.active { display: flex; opacity: 1; transform: translateY(0px); }
 
-        .auth-top { background: linear-gradient(135deg, #25D366, #128C7E); height: 35%; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; flex-shrink: 0; }
+        .auth-top { background: linear-gradient(135deg, #25D366, #128C7E); height: 35%; min-height: 200px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; flex-shrink: 0; transition: background 0.3s; }
         .auth-top h1 { font-size: 56px; margin-top: 10px; font-weight: 800; }
         .auth-subtitle { font-size: 16px; font-weight: 500; opacity: 0.9; margin-top: 5px; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; }
         .form-box { padding: 35px 25px; display: flex; flex-direction: column; gap: 15px; margin-top: -30px; z-index: 5; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; overflow-y: auto; flex: 1;}
@@ -39,7 +39,6 @@
         textarea { border-radius: 20px; resize: none; min-height: 100px; }
         input:focus, textarea:focus { border-color: #25D366; background: #fff; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.1); }
         
-        /* --- JELLY ANIMATIONS FOR BUTTONS --- */
         @keyframes jellySquish {
             0% { transform: scale(1, 1); }
             30% { transform: scale(1.04, 0.96); }
@@ -50,8 +49,7 @@
             100% { transform: scale(1, 1); }
         }
         
-        .btn-main, .btn-secondary, .btn-danger, .btn-success, .action-btn, .send-btn, .btn-danger-small { transition: background 0.2s, box-shadow 0.2s; }
-        
+        .btn-main, .btn-secondary, .btn-danger, .btn-success, .action-btn, .send-btn, .btn-danger-small { transition: background 0.2s, box-shadow 0.2s, color 0.2s; }
         .btn-main:active, .btn-secondary:active, .btn-danger:active, .btn-success:active, 
         .action-btn:active, .send-btn:active, .btn-danger-small:active, .shop-filter-btn:active {
             animation: jellySquish 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
@@ -64,10 +62,21 @@
         .back-btn:active { transform: scale(0.9); }
         .ticket-code-box { background: #f8fafc; border: 2px dashed #128C7E; padding: 20px; text-align: center; border-radius: 20px; margin: 20px 0; font-size: 24px; font-weight: bold; color: #128C7E; letter-spacing: 2px;}
 
-        /* --- JELLY SEARCH BANNER --- */
         .jelly-search { width: 100%; margin: 0; padding: 14px 20px; border-radius: 30px; border: none; background: linear-gradient(135deg, #25D366, #20b858); color: #ffffff; font-size: 15px; font-weight: 600; text-align: center; outline: none; box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3); transition: background 0.2s ease, box-shadow 0.2s ease; }
         .jelly-search::placeholder { color: rgba(255, 255, 255, 0.85); }
         .jelly-search:active, .jelly-search:focus { animation: jellySquish 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5); background: linear-gradient(135deg, #20b858, #1da04d); }
+
+        /* SELLER THEME (YELLOW) */
+        .seller-theme .app-container { background: #fffdf5; }
+        .seller-theme .auth-top, .seller-theme #splash-screen { background: linear-gradient(135deg, #eab308, #ca8a04); }
+        .seller-theme .btn-main { background-color: #eab308; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); color: #111; }
+        .seller-theme .btn-success { background-color: #eab308; color: #111; }
+        .seller-theme .jelly-search { background: linear-gradient(135deg, #eab308, #ca8a04); color: #111; box-shadow: 0 6px 15px rgba(234, 179, 8, 0.3); }
+        .seller-theme .jelly-search::placeholder { color: rgba(0,0,0,0.6); }
+        .seller-theme .unread-badge { background: #eab308; color: #111; }
+        .seller-theme .bottom-nav { background: rgba(234, 179, 8, 0.85); border: 1px solid rgba(0,0,0,0.1); }
+        .seller-theme .nav-item.active { background: #fef08a; box-shadow: 0 5px 15px rgba(254, 240, 138, 0.5); }
+        .seller-theme .header-icon-btn svg { color: #ca8a04; }
 
         .admin-theme { background-color: #121212 !important; }
         .admin-theme .header { background: #0a0a0a !important; color: #fff !important; border-bottom: 1px solid #E50914 !important; }
@@ -92,6 +101,7 @@
         .chat-list { flex: 1; overflow-y: auto; background: #fff; padding-top: 5px; transition: 0.3s; padding-bottom: 90px; }
         .chat-item { display: flex; align-items: center; padding: 14px 20px; cursor: pointer; transition: background 0.2s; }
         .chat-item:active { background: #f8f9fa; }
+        .chat-item.disabled-group { opacity: 0.5; filter: grayscale(100%); }
         
         .chat-info { flex: 1; overflow: hidden; display: flex; flex-direction: column; gap: 4px; padding-bottom: 14px; margin-left: 15px; border-bottom: 1px solid #f0f0f0; min-width: 0; }
         .chat-name { font-size: 16px; font-weight: 600; color: #111; display:flex; align-items:center; }
@@ -121,7 +131,6 @@
         .input-area input { flex: 1; padding: 14px 20px; border: none; border-radius: 30px; font-size: 15px; outline: none; }
         .send-btn { background: #25D366; width: 46px; height: 46px; border-radius: 50%; color: white; border: none; font-size: 18px; transform: rotate(-35deg); cursor: pointer; }
 
-        /* --- MENUS --- */
         #msg-action-menu, #settings-action-menu, #chat-list-action-menu { position: absolute; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 2000; padding: 20px; transition: bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; gap: 10px;}
         #msg-action-menu.active, #settings-action-menu.active, #chat-list-action-menu.active { bottom: 0; }
 
@@ -135,24 +144,29 @@
         .nav-item svg { width: 26px; height: 26px; stroke-width: 2.5px; }
         .nav-item.active { background: #bbf7d0; opacity: 1; transform: translateY(-5px) scale(1.1); box-shadow: 0 5px 15px rgba(187, 247, 208, 0.5); }
 
-        /* --- SHOP UI --- */
+        /* SHOP UI */
         #screen-shop { background: #fafafa; padding-bottom: 100px; overflow-y: auto; }
         .shop-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; }
         .shop-header-dp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #ddd; object-fit: cover; }
         .shop-title { padding: 0 20px; font-size: 26px; font-weight: 800; color: #111; line-height: 1.2; }
         .shop-title span { color: #128C7E; }
-        .shop-categories { padding: 0 20px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
-        .category-pill { background: #fff; border: 1px solid #ddd; color: #555; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; white-space: nowrap; transition: 0.3s; }
-        .category-pill.active { background: #128C7E; color: white; border-color: #128C7E; }
         .shop-grid { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .shop-card { background: white; border-radius: 20px; padding: 15px; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
-        .card-blank-img { width: 100%; height: 90px; background: #f5f5f5; border-radius: 15px; margin-bottom: 12px; }
+        
+        /* Item Place Excel UI */
+        .item-place-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 4000; display: flex; justify-content: center; align-items: center; }
+        .item-place-box { background: white; width: 92%; max-width: 450px; border-radius: 16px; padding: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .excel-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .excel-table th { background: #f8fafc; padding: 10px; text-align: left; font-size: 13px; color: #475569; border-bottom: 2px solid #e2e8f0; }
+        .excel-table td { padding: 8px 4px; border-bottom: 1px solid #f1f5f9; }
+        .excel-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; }
+        .excel-input:focus { border-color: #128C7E; background: #fff; box-shadow: 0 0 0 3px rgba(18, 140, 126, 0.1); }
 
         .profile-dp-container { position: relative; width: 110px; height: 110px; margin: 0 auto 20px; border-radius: 50%; border: 3px solid #25D366; padding: 3px; display: flex; justify-content: center; align-items: center; background: #e0e0e0; }
         .profile-dp-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .edit-dp-icon { position: absolute; bottom: 0; right: 0; background: #128C7E; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; font-size: 14px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        #toast { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; transition: bottom 0.3s ease; z-index: 3000; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        #toast { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); background: #222; color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; transition: bottom 0.3s ease; z-index: 5000; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
         #toast.show { bottom: 100px; } 
     </style>
 </head>
@@ -163,7 +177,7 @@
         <div id="splash-screen"><h1 class="splash-title">BTD</h1></div>
 
         <div id="screen-auth" class="screen active">
-            <div class="auth-top"><h1>BTD</h1><div class="auth-subtitle">Community Edition 2.1</div></div>
+            <div class="auth-top"><h1>BTD</h1><div class="auth-subtitle">Community Edition 3.0</div></div>
             
             <div class="form-box" id="auth-main-view">
                 <button class="btn-main" onclick="showLoginView()">Log In</button>
@@ -183,7 +197,7 @@
 
             <div class="form-box" id="auth-signup-view" style="display: none;">
                 <button class="back-btn" onclick="showAuthMain()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
-                <input type="text" id="signup-name" placeholder="Full Name *">
+                <input type="text" id="signup-name" placeholder="Unique Username (No Spaces) *" autocomplete="off">
                 <input type="text" id="signup-mobile" placeholder="Mobile Number (10 digits) *" autocomplete="off">
                 <input type="password" id="signup-password" placeholder="Password *">
                 <button class="btn-main" style="background-color: #128C7E;" onclick="handleSignup()">Create Account</button>
@@ -226,8 +240,8 @@
                 </div>
             </div>
             
-            <div style="padding: 10px 20px; background: #fff; border-bottom: 1px solid #f0f0f0;">
-                <input type="text" id="user-search-input" class="jelly-search" placeholder="Search" onkeyup="filterUsers()">
+            <div style="padding: 10px 20px; background: inherit; border-bottom: 1px solid #f0f0f0;">
+                <input type="text" id="user-search-input" class="jelly-search" placeholder="Search Chats..." onkeyup="filterUsers()">
             </div>
                 
             <div class="chat-list" id="chat-list">
@@ -240,13 +254,12 @@
                 <img id="shop-user-dp" src="" class="shop-header-dp" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=User'">
                 <div class="shop-header-icon">🔔</div>
             </div>
-            <div class="shop-title">Choose<br>Your Favorite <span>Popularity</span></div>
-            <div class="shop-search-area">
-                <input type="text" class="jelly-search" placeholder="Search">
+            <div class="shop-title">Shop for<br>Your Favorite <span>Popularity</span></div>
+            <div class="shop-search-area" style="padding: 0 20px; margin-top:10px;">
+                <input type="text" class="jelly-search" placeholder="Search Items">
             </div>
-            <div class="shop-grid">
-                <div class="shop-card"><div class="card-blank-img"></div><div class="card-title">Coming Soon</div></div>
-            </div>
+            <div class="shop-grid" id="shop-grid-render">
+                </div>
         </div>
 
         <div id="main-bottom-nav" class="bottom-nav">
@@ -260,19 +273,53 @@
                 <span id="admin-title">Admin Console</span>
             </div>
             <div class="admin-dashboard" id="admin-grid">
-                <div class="admin-card" onclick="openAdminSection('users')"><i>🔐</i><span>User Mgt.</span></div>
+                <div class="admin-card" onclick="openAdminSection('orders')"><i>📦</i><span>Sales & Orders</span></div>
+                <div class="admin-card" onclick="openAdminSection('users')" id="admin-btn-users" style="display:none;"><i>🔐</i><span>User Mgt.</span></div>
                 <div class="admin-card" onclick="openAdminSection('tickets')"><i>🎫</i><span>Support Desk</span></div>
-                <div class="admin-card" onclick="openAdminSection('chatcontrol')"><i>🛠️</i><span>Chat Control</span></div>
-                <div class="admin-card" onclick="openAdminSection('activity')"><i>📈</i><span>Flow Map</span></div>
+                <div class="admin-card" onclick="openAdminSection('chatcontrol')" id="admin-btn-chats" style="display:none;"><i>🛠️</i><span>Chat Control</span></div>
+                <div class="admin-card" onclick="openAdminSection('activity')" id="admin-btn-flow" style="display:none;"><i>📈</i><span>Flow Map</span></div>
             </div>
-            <div id="admin-sec-users" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">Manage Users</h3><div id="admin-user-list-render"></div></div>
-            <div id="admin-sec-tickets" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">Open Support Tickets</h3><div id="admin-ticket-list-render"></div></div>
+            
+            <div id="admin-sec-orders" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Sales & Orders</h3>
+                    <button onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <input type="text" id="search-orders" class="jelly-search" placeholder="Search orders..." onkeyup="renderAdminOrders()" style="margin-bottom:15px; border-radius:12px;">
+                <div id="total-profit-display" style="color:#25D366; font-size:18px; font-weight:bold; margin-bottom:15px;"></div>
+                <div id="admin-order-list-render"></div>
+            </div>
+            <div id="admin-sec-users" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Manage Users</h3>
+                    <button onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <input type="text" id="search-users" class="jelly-search" placeholder="Search users..." onkeyup="renderAdminUsers()" style="margin-bottom:15px; border-radius:12px;">
+                <div id="admin-user-list-render"></div>
+            </div>
+            <div id="admin-sec-tickets" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Support Tickets</h3>
+                    <button onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <input type="text" id="search-tickets" class="jelly-search" placeholder="Search tickets..." onkeyup="renderAdminTickets()" style="margin-bottom:15px; border-radius:12px;">
+                <div id="admin-ticket-list-render"></div>
+            </div>
             <div id="admin-sec-chatcontrol" class="admin-section">
-                <h3 style="color:white; margin-bottom: 15px;">Chat Data Control</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Chat Control</h3>
+                    <button onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
                 <button class="btn-success" onclick="backupAllChats()">📥 Download JSON Backup</button>
                 <button class="btn-danger" style="margin-top:15px;" onclick="clearAllChats()">⚠️ Delete All Chats</button>
             </div>
-            <div id="admin-sec-activity" class="admin-section"><h3 style="color:white; margin-bottom: 15px;">Live Connection Flow</h3><div id="admin-activity-render"></div></div>
+            <div id="admin-sec-activity" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Live Connection Flow</h3>
+                    <button onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <div id="admin-activity-render"></div>
+            </div>
             <div id="admin-sec-ghost" class="admin-section" style="padding:0; display:flex; flex-direction:column;">
                 <div style="background:#0a0a0a; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333;"><h3 id="ghost-title" style="color:white; font-size:16px; margin:0;">👻 Ghost View</h3><button onclick="closeGhostView()" style="background:none; border:none; color:#E50914; font-weight:bold; cursor:pointer;">Close ✖</button></div>
                 <div id="ghost-chat-area" style="flex:1; background:#121212; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
@@ -284,11 +331,11 @@
                 <button class="header-icon-btn" style="margin-left: -5px;" onclick="window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
                 <span>Edit Profile</span><div style="width: 26px;"></div>
             </div>
-            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5; padding-top: 20px;">
+            <div class="form-box" style="height: 100%; border-radius: 0; background: inherit; padding-top: 20px;">
                 <div class="profile-dp-container" onclick="toggleDpInput()"><img id="my-profile-img" src=""><div class="edit-dp-icon">📷</div></div>
                 <div style="background: white; padding: 25px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
                     <div id="dp-input-section" style="display: none; margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 16px; border: 1px dashed #128C7E;"><input type="text" id="prof-dp-url" placeholder="Paste image link here..." style="margin-bottom: 0;"></div>
-                    <input type="text" id="prof-name" placeholder="Display Name" style="margin-bottom: 15px;">
+                    <input type="text" id="prof-name" placeholder="Display Name" style="margin-bottom: 15px;" disabled>
                     <input type="text" id="prof-bio" placeholder="About You (Bio)" style="margin-bottom: 20px;">
                     <button class="btn-main" onclick="saveProfile()">Save Changes</button>
                     <button class="btn-secondary" onclick="shareProfile()" style="margin-top: 15px; width: 100%; color: #128C7E;">Share My Profile</button>
@@ -302,7 +349,7 @@
                 <button class="header-icon-btn" style="margin-left: -5px;" onclick="window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
                 <span>User Profile</span><div style="width: 26px;"></div>
             </div>
-            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5; padding-top: 40px; align-items: center;">
+            <div class="form-box" style="height: 100%; border-radius: 0; background: inherit; padding-top: 40px; align-items: center;">
                 <div id="other-prof-dp-container" style="position:relative; width:140px; height:140px; flex-shrink:0; display:flex; justify-content:center;"></div>
                 <h2 id="other-prof-name" style="margin-top: 10px; color: #333;">Name</h2>
                 <div style="background: white; width: 100%; padding: 25px; border-radius: 20px; margin-top: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: center;">
@@ -312,13 +359,52 @@
                 <button id="btn-block-user" class="btn-danger" style="margin-top: 20px; max-width: 200px;" onclick="toggleBlockUser()">Block User</button>
             </div>
         </div>
+        
+        <div id="screen-live-profile" class="screen">
+            <div class="header">
+                <button class="header-icon-btn" style="margin-left: -5px;" onclick="window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
+                <span>Group Settings</span><div style="width: 26px;"></div>
+            </div>
+            <div class="form-box" style="height: 100%; border-radius: 0; background: inherit; padding-top: 10px;">
+                <div style="text-align: center; margin-bottom:15px;">
+                    <div style="font-size: 60px; margin-bottom:5px;">🌐</div>
+                    <h2 style="color:#111;">Live Community</h2>
+                    <p id="live-activity-indicator" style="color: #25D366; font-weight:bold; font-size:14px; margin-top:4px;">Calculating Activity...</p>
+                </div>
+                
+                <div id="smart-suggestion-box" style="background:#fef08a; padding:12px 15px; border-radius:12px; margin-bottom:15px; color:#a16207; font-weight:bold; display:none; border-left: 4px solid #ca8a04;">
+                    💡 Smart Suggestion: High message volume detected. Consider muting.
+                </div>
+                
+                <div style="display:flex; justify-content:space-around; margin-bottom:20px; padding:15px; background:white; border-radius:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <div style="text-align:center;"><div style="font-size:20px; font-weight:800; color:#128C7E;" id="live-total-users">0</div><div style="font-size:12px; color:#666;">Total Users</div></div>
+                    <div style="border-left:1px solid #eee;"></div>
+                    <div style="text-align:center;"><div style="font-size:20px; font-weight:800; color:#25D366;" id="live-active-users">0</div><div style="font-size:12px; color:#666;">Active Now</div></div>
+                </div>
+                
+                <div style="background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                    <label style="font-weight:bold; color:#333; display:block; margin-bottom:8px;">🔇 Mute Group (Stay Active)</label>
+                    <select id="mute-duration-select" style="width:100%; padding:12px; border-radius:12px; border:1px solid #ddd; outline:none; background:#f8fafc; margin-bottom:20px;" onchange="setLiveMute(this.value)">
+                        <option value="0">Not Muted 🔔</option>
+                        <option value="1">Mute for 1 Hour</option>
+                        <option value="8">Mute for 8 Hours</option>
+                        <option value="24">Mute for 24 Hours</option>
+                        <option value="forever">Mute Forever</option>
+                    </select>
+                    
+                    <button class="btn-secondary" id="btn-toggle-priority" style="width:100%; margin-top:0; border-radius:12px; font-size:15px;" onclick="toggleLivePriority()">⭐ Mark as Priority (Always Top)</button>
+                    
+                    <button class="btn-danger" id="btn-toggle-disable" style="width:100%; margin-top:15px; border-radius:12px; font-size:15px;" onclick="toggleLiveDisable()">🚫 Disable Group (Leave Active)</button>
+                </div>
+            </div>
+        </div>
 
         <div id="screen-inapp-support" class="screen">
             <div class="header">
                 <button class="header-icon-btn" style="margin-left: -5px;" onclick="window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
                 <span>Admin Support</span><div style="width: 26px;"></div>
             </div>
-            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5;">
+            <div class="form-box" style="height: 100%; border-radius: 0; background: inherit;">
                 <h3 style="color: #333; margin-bottom: 5px;">How can we help?</h3>
                 <textarea id="inapp-ticket-issue" placeholder="Describe your problem or report... *" style="min-height: 120px;"></textarea>
                 <button class="btn-main" onclick="submitInAppTicket()">Submit Ticket</button>
@@ -330,7 +416,7 @@
                 <button class="header-icon-btn" style="margin-left: -5px;" onclick="window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
                 <span>Report Status</span><div style="width: 26px;"></div>
             </div>
-            <div class="form-box" style="height: 100%; border-radius: 0; background: #f0f2f5;">
+            <div class="form-box" style="height: 100%; border-radius: 0; background: inherit;">
                 <h3 style="color: #333; margin-bottom: 15px;">Check Your Tickets</h3>
                 <input type="text" id="inapp-check-ticket-code" placeholder="Enter your BTD- Code" style="text-transform: uppercase;">
                 <button class="btn-main" style="background-color: #128C7E;" onclick="checkInAppTicketStatus()">Check Status</button>
@@ -342,15 +428,23 @@
         </div>
 
         <div id="screen-chat-room" class="screen">
-            <div class="chat-room-header">
-                <button class="header-icon-btn" style="margin-left: -5px; margin-right: 5px;" onclick="window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
-                <div id="room-avatar" style="cursor:pointer;" onclick="viewCurrentRoomProfile()"></div>
-                <div style="flex:1; cursor:pointer; overflow:hidden; margin-left: 10px;" onclick="viewCurrentRoomProfile()">
+            <div class="chat-room-header" id="chat-room-header" style="cursor:pointer;" onclick="openCurrentGroupOrProfile()">
+                <button class="header-icon-btn" style="margin-left: -5px; margin-right: 5px;" onclick="event.stopPropagation(); window.history.back()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
+                <div id="room-avatar"></div>
+                <div style="flex:1; overflow:hidden; margin-left: 10px;">
                     <div id="room-name" style="line-height:1.2;">Chat</div>
                     <div id="room-bio" style="font-size:11px; color:#888; font-weight:normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></div>
                 </div>
             </div>
             
+            <div id="deal-action-banner" style="display:none; padding:15px; background:#f0fdf4; border-bottom:1px solid #bbf7d0; text-align:center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); z-index: 10;">
+                <div id="deal-action-text" style="font-weight:bold; margin-bottom:10px; color:#166534; font-size:15px;">Deal Action</div>
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button class="btn-success" style="margin:0; padding:10px 20px; font-size:14px;" onclick="handleDeal('success')">Deal Success</button>
+                    <button class="btn-danger" style="margin:0; padding:10px 20px; width:auto; font-size:14px;" onclick="handleDeal('cancel')">Deal Cancel</button>
+                </div>
+            </div>
+
             <div class="message-area" id="message-area"></div>
             
             <div class="input-container">
@@ -362,9 +456,27 @@
                     <input type="text" id="msg-input" placeholder="Message or paste GIF here...">
                     <button class="send-btn" onclick="sendMessage()">&#10148;</button>
                 </div>
-                <div id="chat-blocked-banner" style="display:none; padding:15px; text-align:center; background:#ffe4e6; color:#E50914; font-weight:bold; border-radius:20px; margin:0 15px 10px 15px; cursor:pointer; animation: jellySquish 0.5s;" onclick="viewCurrentRoomProfile()">
+                <div id="chat-blocked-banner" style="display:none; padding:15px; text-align:center; background:#ffe4e6; color:#E50914; font-weight:bold; border-radius:20px; margin:0 15px 10px 15px; cursor:pointer; animation: jellySquish 0.5s;" onclick="openCurrentGroupOrProfile()">
                     Tap to unblock user
                 </div>
+            </div>
+        </div>
+
+        <div id="item-place-modal" class="item-place-modal" style="display:none;">
+            <div class="item-place-box">
+                <h3 style="color:#111; margin-bottom: 5px;">🛍️ Item Place</h3>
+                <p style="font-size:13px; color:#666; margin-bottom: 15px;">Manage your stock inventory systematically.</p>
+                <div style="overflow-x:auto;">
+                    <table class="excel-table">
+                        <thead><tr><th>No.</th><th>Popularity (Name)</th><th>Qty</th><th>Price(₹)</th><th>Del</th></tr></thead>
+                        <tbody id="item-table-body"></tbody>
+                    </table>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-secondary" style="flex:1; margin:0;" onclick="addTableRow()">+ Add Row</button>
+                    <button class="btn-main" style="flex:2; margin:0;" onclick="applyToSale()">🚀 Apply to Sale</button>
+                </div>
+                <button style="width:100%; padding:12px; margin-top:15px; border:none; background:none; color:#E50914; font-weight:bold; cursor:pointer;" onclick="closeItemPlace()">Cancel</button>
             </div>
         </div>
 
@@ -387,7 +499,7 @@
         </div>
         
         <div id="chat-list-action-menu">
-            <button class="action-btn" id="btn-pin-chat" onclick="actionPinChat()">📌 Pin to Top</button>
+            <button class="action-btn" id="btn-pin-chat" onclick="actionPinChat()">📌 Pin/Unpin</button>
             <button class="action-btn danger" onclick="actionDeleteChat()">🗑️ Delete Chat</button>
         </div>
 
@@ -402,11 +514,15 @@
         let users = []; let ticketsData = {}; let activityLogs = []; let myRecentChats = {}; 
         let currentUser = null; let activeChatId = null; let activeChatName = null; 
         
-        let currentChatListener = null; let selectedMsgKey = null; let selectedMsgText = null; let selectedMsgSenderId = null;
+        let currentChatListener = null; let currentActiveChatRefId = null; // Bug fix for double msgs
+        let selectedMsgKey = null; let selectedMsgText = null; let selectedMsgSenderId = null;
         let replyTargetData = null; let isEditingMsg = false; let currentViewingProfileMobile = null; 
         
         let longPressTimer; let isLongPress = false; let selectedChatListMobile = null;
         const PURPLE_HEART_REGEN_MS = 34560000; 
+
+        // Shop & Deals Globals
+        let shopItems = {}; let tempItems = []; let activeDeals = {};
 
         window.history.replaceState({ screen: 'screen-auth' }, '');
 
@@ -480,6 +596,13 @@
                 if(document.getElementById('login-password')) document.getElementById('login-password').value = creds.pass;
                 setTimeout(() => { if(typeof showLoginView === "function") showLoginView(); if(typeof handleLogin === "function") handleLogin(); }, 400);
             }
+
+            // Global Listeners for Shop Data
+            db.ref('shop_items').on('value', snap => {
+                shopItems = snap.val() || {};
+                if(document.getElementById('screen-shop').classList.contains('active')) renderShopItems();
+            });
+            db.ref('deals').on('value', snap => { activeDeals = snap.val() || {}; });
         });
 
         db.ref('users').on('value', snapshot => {
@@ -500,7 +623,7 @@
                     const roomAvatar = document.getElementById('room-avatar');
                     if(roomAvatar) roomAvatar.innerHTML = getLiveAvatarHTML(38);
                     updateChatInputState();
-                } else if (activeChatId) {
+                } else if (activeChatId && !activeChatId.startsWith('deal_')) {
                     const otherMobile = activeChatId.replace(String(currentUser.mobile), '').replace('_', '');
                     const u = users.find(user => String(user.mobile) === String(otherMobile));
                     const roomAvatar = document.getElementById('room-avatar');
@@ -525,6 +648,7 @@
             if(screenId === 'screen-chat' || screenId === 'screen-shop') { bottomNav.style.display = 'flex'; } else { bottomNav.style.display = 'none'; }
             if(!isBack) window.history.pushState({ screen: screenId }, '', '#' + screenId);
             if(screenId === 'screen-chat' && currentUser) { filterUsers(); }
+            if(screenId === 'screen-shop' && currentUser) { renderShopItems(); }
         }
 
         function openHomeTab() { document.getElementById('nav-home').classList.add('active'); document.getElementById('nav-shop').classList.remove('active'); switchScreen('screen-chat'); if(currentUser) filterUsers(); }
@@ -553,9 +677,7 @@
             showToast("Ticket Submitted! Your Code: " + code);
             setTimeout(() => { alert("Save this tracking code: " + code); window.history.back(); }, 500);
         }
-
         function copyTicketCode() { const code = document.getElementById('generated-ticket-code').innerText; navigator.clipboard.writeText(code).then(() => { showToast("Code copied to clipboard! 🌸"); setTimeout(showAuthMain, 1000); }); }
-        
         function checkTicketStatus() {
             let code = document.getElementById('check-ticket-code').value.trim().toUpperCase(); if(!code) { showToast("Please enter a valid code! ✨"); return; } if(!code.startsWith('BTD-')) code = 'BTD-' + code; 
             db.ref('tickets/' + code).once('value').then(snapshot => {
@@ -576,7 +698,15 @@
         function handleLogin() {
             const mobile = document.getElementById('login-mobile').value.trim(); const pass = document.getElementById('login-password').value.trim();
             if (!mobile || !pass) { showToast("Please enter details. ✨"); return; }
-            if (mobile === 'ankitankit' && pass === 'ankitankit') { loginComplete({ name: 'Super Admin', mobile: 'ankitankit', isAdmin: true, role: 'admin' }, pass); return; }
+            
+            // System Default Admins
+            if (mobile === 'ankitankit' && pass === 'ankitankit') { 
+                loginComplete({ name: 'Super Admin', mobile: mobile, role: 'admin' }, pass); return; 
+            }
+            if (mobile === 'ankit' && pass === '8950832685') { 
+                loginComplete({ name: 'Admin Post', mobile: mobile, role: 'seller' }, pass); return; 
+            }
+            
             const existingUser = users.find(u => String(u.mobile) === String(mobile));
             if (existingUser) { 
                 if(existingUser.isBanned) { showToast("Account restricted. 🚫"); return; } 
@@ -585,12 +715,23 @@
         }
 
         function handleSignup() {
-            const name = document.getElementById('signup-name').value.trim(); const mobile = document.getElementById('signup-mobile').value.trim(); const pass = document.getElementById('signup-password').value.trim();
+            let name = document.getElementById('signup-name').value.trim(); 
+            const mobile = document.getElementById('signup-mobile').value.trim(); 
+            const pass = document.getElementById('signup-password').value.trim();
+            
             if (!name || !mobile || !pass) { showToast("Please fill all fields. ✨"); return; }
+            
+            // Uniqueness and spaces check
+            name = name.replace(/\s+/g, ''); // Removes all spaces
+            if (/[^a-zA-Z0-9_]/.test(name)) { showToast("No special chars allowed in username! 🌸"); return; }
+            
+            const nameTaken = users.some(u => u.name.toLowerCase() === name.toLowerCase());
+            if(nameTaken) { showToast("Username already taken! 🌸"); return; }
+
             const existingUser = users.find(u => String(u.mobile) === String(mobile));
             if (existingUser) { showToast("Number already registered! 🌸"); return; }
             
-            const newUser = { name: name, mobile: mobile, pass: pass, dpUrl: "", bio: "Hey there! ✨", role: "user", isBanned: false, purpleBalance: 5, lastPurpleRegen: Date.now() };
+            const newUser = { name: name, mobile: mobile, pass: pass, dpUrl: "", bio: "Hey there! ✨", role: "user", isBanned: false, purpleBalance: 5, lastPurpleRegen: Date.now(), liveDisabled: false, liveMutedUntil: 0 };
             db.ref('users/' + mobile).set(newUser);
             showToast("Account created! ✨"); setTimeout(() => { loginComplete(newUser, pass); }, 800);
         }
@@ -610,15 +751,18 @@
         }
 
         function getLiveAvatarHTML(size = 52) {
-            let onlineUsers = users.filter(u => u.status && String(u.status).toLowerCase() === 'online');
+            let isMuted = currentUser && currentUser.liveMutedUntil && currentUser.liveMutedUntil > Date.now();
+            let muteIcon = isMuted ? '<div style="position:absolute; top:-5px; right:-5px; font-size:16px; z-index:5; background:white; border-radius:50%;">🔇</div>' : '';
+            
+            let onlineUsers = users.filter(u => u.status && String(u.status).toLowerCase() === 'online' && !u.liveDisabled);
             let isMeOnline = currentUser ? onlineUsers.find(u => String(u.mobile) === String(currentUser.mobile)) : true;
             let onlineCount = onlineUsers.length;
-            if (!isMeOnline && currentUser) onlineCount++; 
+            if (!isMeOnline && currentUser && !currentUser.liveDisabled) onlineCount++; 
 
             if (onlineCount <= 1) {
-                return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:#ffe4e6; border:2px solid #E50914; display:flex; justify-content:center; align-items:center; font-size:${size/4.5}px; font-weight:bold; color:#E50914; text-align:center; line-height:1;">Only<br>You</div>`;
+                return `<div style="position:relative; width:${size}px; height:${size}px; border-radius:50%; background:#ffe4e6; border:2px solid #E50914; display:flex; justify-content:center; align-items:center; font-size:${size/4.5}px; font-weight:bold; color:#E50914; text-align:center; line-height:1;">${muteIcon}Only<br>You</div>`;
             } else {
-                return `<div style="width:${size}px; height:${size}px; border-radius:50%; background:#dcfce7; border:2px solid #25D366; display:flex; justify-content:center; align-items:center; font-size:${size/2.5}px; font-weight:bold; color:#16a34a;">${onlineCount}</div>`;
+                return `<div style="position:relative; width:${size}px; height:${size}px; border-radius:50%; background:#dcfce7; border:2px solid #25D366; display:flex; justify-content:center; align-items:center; font-size:${size/2.5}px; font-weight:bold; color:#16a34a;">${muteIcon}${onlineCount}</div>`;
             }
         }
 
@@ -650,13 +794,36 @@
             let localDevId = localStorage.getItem('btd_device_id');
             if(!localDevId) { localDevId = generateDeviceID(); localStorage.setItem('btd_device_id', localDevId); }
             
+            // Set default role if missing
+            if(!currentUser.role) { currentUser.role = 'user'; db.ref('users/' + user.mobile).update({ role: 'user' }); }
+
             db.ref('users/' + user.mobile).update({ deviceId: localDevId, status: 'online' });
 
-            document.getElementById('welcome-text').innerText = user.isAdmin ? "Admin Console" : `Hi, ${user.name.split(' ')[0]}`;
+            document.getElementById('welcome-text').innerText = (user.role === 'admin' || user.role === 'seller') ? "Control Panel" : `Hi, ${user.name.split(' ')[0]}`;
             document.getElementById('prof-name').value = user.name || ""; document.getElementById('prof-dp-url').value = user.dpUrl || ""; document.getElementById('prof-bio').value = user.bio || "Hey there! ✨"; 
             document.getElementById('my-profile-img').src = getAvatarUrl(user);
 
-            if (user.isAdmin || user.role === 'admin') { document.getElementById('admin-btn').style.display = 'flex'; document.getElementById('screen-chat').classList.add('admin-theme'); } else { document.getElementById('admin-btn').style.display = 'none'; document.getElementById('screen-chat').classList.remove('admin-theme'); }
+            // Seller Theme Injection
+            if (user.role === 'seller') {
+                document.body.classList.add('seller-theme');
+            } else {
+                document.body.classList.remove('seller-theme');
+            }
+
+            // Show Admin Button based on role
+            if (user.role === 'admin' || user.role === 'seller') { 
+                document.getElementById('admin-btn').style.display = 'flex'; 
+                document.getElementById('screen-chat').classList.add('admin-theme'); 
+                
+                // Super Admin sees all cards, Seller Admin sees limited cards
+                document.getElementById('admin-btn-users').style.display = (user.role === 'admin') ? 'flex' : 'none';
+                document.getElementById('admin-btn-chats').style.display = (user.role === 'admin') ? 'flex' : 'none';
+                document.getElementById('admin-btn-flow').style.display = (user.role === 'admin') ? 'flex' : 'none';
+                
+            } else { 
+                document.getElementById('admin-btn').style.display = 'none'; 
+                document.getElementById('screen-chat').classList.remove('admin-theme'); 
+            }
             
             syncPurpleBalance();
             setupPresence();
@@ -693,13 +860,22 @@
         }
         function handleChatTouchEnd() { clearTimeout(longPressTimer); }
         function handleChatClick(chatId, chatName) {
-            if(isLongPress) return; openChatRoom(chatId, chatName);
+            if(isLongPress) return; 
+            if(chatId === 'live' && currentUser && currentUser.liveDisabled) {
+                if(confirm("Live Group is Disabled. Do you want to enable it to view messages? ✨")) {
+                    db.ref('users/' + currentUser.mobile).update({ liveDisabled: false });
+                    currentUser.liveDisabled = false;
+                    openChatRoom(chatId, chatName);
+                }
+                return;
+            }
+            openChatRoom(chatId, chatName);
         }
 
         function openChatListMenu(mobile) {
             selectedChatListMobile = mobile;
             const chatData = myRecentChats[mobile] || {};
-            document.getElementById('btn-pin-chat').innerText = chatData.pinned ? '📌 Unpin Chat' : '📌 Pin to Top';
+            document.getElementById('btn-pin-chat').innerText = chatData.pinned ? '📌 Unpin Chat' : '📌 Priority Pin';
             document.getElementById('menu-overlay').style.display = 'block';
             document.getElementById('chat-list-action-menu').classList.add('active');
         }
@@ -739,18 +915,38 @@
 
         function renderRecentChats() {
             const list = document.getElementById('dynamic-user-list');
+            
+            let isLiveDisabled = currentUser && currentUser.liveDisabled;
+            let isMuted = currentUser && currentUser.liveMutedUntil && currentUser.liveMutedUntil > Date.now();
+            let unreadLive = (myRecentChats['live'] && myRecentChats['live'].unread && !isMuted && !isLiveDisabled) ? `<div class="unread-badge">${myRecentChats['live'].unread}</div>` : '';
+            
             let html = `
-                <div class="chat-item" 
+                <div class="chat-item ${isLiveDisabled ? 'disabled-group' : ''}" 
                     onmousedown="handleChatTouchStart('live')" onmouseup="handleChatTouchEnd()" onmouseleave="handleChatTouchEnd()"
                     ontouchstart="handleChatTouchStart('live')" ontouchend="handleChatTouchEnd()" ontouchmove="handleChatTouchEnd()"
                     onclick="handleChatClick('live', 'Live Group Chat')">
                     ${getLiveAvatarHTML(52)}
                     <div class="chat-info">
-                        <div class="chat-name">Live Group Chat ${myRecentChats['live'] && myRecentChats['live'].pinned ? '📌' : ''}</div>
-                        <div class="chat-msg">Tap to join the community...</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="chat-name">Live Community ${myRecentChats['live'] && myRecentChats['live'].pinned ? '⭐' : ''}</div>
+                            <div style="font-size:11px; color:#888;">${myRecentChats['live'] && myRecentChats['live'].time ? new Date(myRecentChats['live'].time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : ''}</div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div class="chat-msg">${isLiveDisabled ? 'Group Disabled 🚫' : (myRecentChats['live']?.lastMsg || 'Tap to join the community...')}</div>
+                            ${unreadLive}
+                        </div>
                     </div>
                 </div>
             `;
+
+            // Admin Post (Seller) Item Place Banner Below Live Chat
+            if(currentUser && (currentUser.role === 'seller' || currentUser.role === 'admin')) {
+                html += `
+                <div style="padding: 12px 20px; background: #e0f2fe; border-bottom: 1px solid #bae6fd; cursor: pointer; display: flex; justify-content: space-between; align-items: center;" onclick="openItemPlace()">
+                    <div style="font-weight: bold; color: #0284c7; font-size:15px;">🛍️ Item Place (Manage Stock)</div>
+                    <div style="color: #0284c7; font-size: 18px; font-weight:bold;">➔</div>
+                </div>`;
+            }
             
             const sortedChats = Object.keys(myRecentChats).map(m => ({ mobile: m, ...myRecentChats[m] })).sort((a, b) => {
                 if (a.pinned && !b.pinned) return -1;
@@ -762,6 +958,33 @@
 
             sortedChats.forEach(chat => {
                 if(chat.mobile === 'live') return; 
+
+                // Deal Chat Override
+                if(chat.mobile.startsWith('deal_')) {
+                    const isMeSellerOrAdmin = currentUser.role === 'seller' || currentUser.role === 'admin';
+                    const dealName = isMeSellerOrAdmin ? `Deal Order: ${chat.mobile.split('_')[1]}` : `Support Deal Admin`;
+                    const dpHTML = `<div style="width:52px;height:52px;border-radius:50%;background:#e2e8f0;display:flex;justify-content:center;align-items:center;font-size:24px;border:2px solid #94a3b8;flex-shrink:0;">🤝</div>`;
+
+                    html += `
+                        <div class="chat-item" 
+                             onmousedown="handleChatTouchStart('${chat.mobile}')" onmouseup="handleChatTouchEnd()" onmouseleave="handleChatTouchEnd()"
+                             ontouchstart="handleChatTouchStart('${chat.mobile}')" ontouchend="handleChatTouchEnd()" ontouchmove="handleChatTouchEnd()"
+                             onclick="handleChatClick('${chat.mobile}', '${dealName}')">
+                            ${dpHTML}
+                            <div class="chat-info">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div class="chat-name">${dealName} ${chat.pinned ? '📌' : ''}</div>
+                                    <div style="font-size:11px; color:#888;">${chat.time ? new Date(chat.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : ''}</div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div class="chat-msg" style="color:#16a34a; font-weight:bold;">${chat.lastMsg || 'Deal Details...'}</div>
+                                    ${chat.unread > 0 ? `<div class="unread-badge">${chat.unread}</div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    return; 
+                }
 
                 const u = users.find(user => String(user.mobile) === String(chat.mobile));
                 if (!u) return; 
@@ -795,7 +1018,7 @@
         }
 
         function updateChatInputState() {
-            if (activeChatId === 'live' || !activeChatId) {
+            if (activeChatId === 'live' || activeChatId.startsWith('deal_') || !activeChatId) {
                 document.getElementById('chat-input-area').style.display = 'flex';
                 document.getElementById('chat-blocked-banner').style.display = 'none';
                 return;
@@ -820,31 +1043,109 @@
             }
         }
 
-        function viewCurrentRoomProfile() {
-            if(activeChatId !== 'live') {
+        function openCurrentGroupOrProfile() {
+            if(activeChatId === 'live') {
+                openLiveGroupProfile();
+            } else if (!activeChatId.startsWith('deal_')) {
                 const otherMobile = activeChatId.replace(String(currentUser.mobile), '').replace('_', '');
                 viewUserProfile(otherMobile);
             }
+        }
+        
+        function openLiveGroupProfile() {
+            document.getElementById('live-total-users').innerText = users.length;
+            document.getElementById('live-active-users').innerText = users.filter(u => u.status === 'online' && !u.liveDisabled).length;
+            
+            let isMuted = currentUser.liveMutedUntil && currentUser.liveMutedUntil > Date.now();
+            let select = document.getElementById('mute-duration-select');
+            if(!isMuted) select.value = "0"; 
+            else if(currentUser.liveMutedUntil > Date.now() + (365*24*60*60*1000)) select.value = "forever";
+            
+            let isPinned = myRecentChats['live'] && myRecentChats['live'].pinned;
+            document.getElementById('btn-toggle-priority').innerText = isPinned ? '⭐ Priority (Pinned)' : '⭐ Mark as Priority';
+            
+            let isDis = currentUser.liveDisabled;
+            document.getElementById('btn-toggle-disable').innerText = isDis ? '✅ Enable Group' : '🚫 Disable Group (Leave Active)';
+            document.getElementById('btn-toggle-disable').className = isDis ? 'btn-success' : 'btn-danger';
+            
+            // Smart Suggestion simple mock logic
+            let suggestionBox = document.getElementById('smart-suggestion-box');
+            if(myRecentChats['live'] && myRecentChats['live'].unread > 20 && !isPinned && !isMuted) {
+                suggestionBox.style.display = 'block';
+                document.getElementById('live-activity-indicator').innerText = 'High Activity 🔥';
+            } else {
+                suggestionBox.style.display = 'none';
+                document.getElementById('live-activity-indicator').innerText = 'Medium Activity ⚡';
+            }
+            
+            switchScreen('screen-live-profile');
+        }
+        
+        function setLiveMute(val) {
+            let until = 0;
+            if(val === "1") until = Date.now() + (1 * 60 * 60 * 1000);
+            else if(val === "8") until = Date.now() + (8 * 60 * 60 * 1000);
+            else if(val === "24") until = Date.now() + (24 * 60 * 60 * 1000);
+            else if(val === "forever") until = Date.now() + (365 * 24 * 60 * 60 * 1000 * 10);
+            
+            db.ref('users/' + currentUser.mobile).update({ liveMutedUntil: until });
+            currentUser.liveMutedUntil = until;
+            showToast(until === 0 ? "Group Unmuted 🔔" : "Group Muted 🔇");
+        }
+        
+        function toggleLivePriority() {
+            let isPinned = myRecentChats['live'] && myRecentChats['live'].pinned;
+            db.ref(`user_chats/${currentUser.mobile}/live`).update({ pinned: !isPinned });
+            showToast(!isPinned ? "Marked as Priority ⭐" : "Priority Removed");
+            openLiveGroupProfile();
+        }
+        
+        function toggleLiveDisable() {
+            let isDis = currentUser.liveDisabled;
+            db.ref('users/' + currentUser.mobile).update({ liveDisabled: !isDis });
+            currentUser.liveDisabled = !isDis;
+            showToast(!isDis ? "Group Disabled. You are removed from active. 🚫" : "Group Enabled! Welcome back. ✅");
+            openLiveGroupProfile();
         }
 
         function openChatRoom(chatId, chatName) {
             activeChatId = chatId; activeChatName = chatName; cancelReply(); 
             const avatarDiv = document.getElementById('room-avatar');
-            if(chatId === 'live') { 
-                avatarDiv.innerHTML = getLiveAvatarHTML(38);
-                document.getElementById('room-name').innerText = "Live Group Chat";
-                document.getElementById('room-bio').innerText = "Public Community Chat";
-            } else { 
-                const otherMobile = chatId.replace(String(currentUser.mobile), '').replace('_', '');
-                const u = users.find(user => String(user.mobile) === String(otherMobile));
-                if(u) {
-                    avatarDiv.innerHTML = generateAvatarHTML(u, 38);
-                    document.getElementById('room-name').innerHTML = `${u.name}`;
-                    document.getElementById('room-bio').innerText = u.bio || "Hey there!";
-                } else {
-                    avatarDiv.innerHTML = '👤';
-                    document.getElementById('room-name').innerText = chatName || "Unknown";
-                    document.getElementById('room-bio').innerText = "";
+            
+            // Deal Room Handling
+            if(chatId.startsWith('deal_')) {
+                avatarDiv.innerHTML = '🤝';
+                document.getElementById('room-name').innerText = chatName || "Deal Room";
+                document.getElementById('room-bio').innerText = "Private Temporary Chat";
+                
+                db.ref('deals/' + chatId).once('value', snap => {
+                    const deal = snap.val();
+                    if(deal && (currentUser.mobile === deal.sellerMobile || currentUser.role === 'admin')) {
+                        document.getElementById('deal-action-banner').style.display = 'block';
+                        document.getElementById('deal-action-text').innerText = `Req: ${deal.qty}x ${deal.itemName} | Total: ₹${deal.totalAmount}`;
+                    } else {
+                        document.getElementById('deal-action-banner').style.display = 'none';
+                    }
+                });
+            } else {
+                document.getElementById('deal-action-banner').style.display = 'none';
+                
+                if(chatId === 'live') { 
+                    avatarDiv.innerHTML = getLiveAvatarHTML(38);
+                    document.getElementById('room-name').innerText = "Live Group Chat";
+                    document.getElementById('room-bio').innerText = "Public Community Chat";
+                } else { 
+                    const otherMobile = chatId.replace(String(currentUser.mobile), '').replace('_', '');
+                    const u = users.find(user => String(user.mobile) === String(otherMobile));
+                    if(u) {
+                        avatarDiv.innerHTML = generateAvatarHTML(u, 38);
+                        document.getElementById('room-name').innerHTML = `${u.name}`;
+                        document.getElementById('room-bio').innerText = u.bio || "Hey there!";
+                    } else {
+                        avatarDiv.innerHTML = '👤';
+                        document.getElementById('room-name').innerText = chatName || "Unknown";
+                        document.getElementById('room-bio').innerText = "";
+                    }
                 }
             }
             
@@ -890,14 +1191,17 @@
             const msgArea = document.getElementById('message-area');
             msgArea.innerHTML = '';
             
-            if(currentChatListener) db.ref('chats/' + activeChatId).off('value', currentChatListener);
+            if(currentActiveChatRefId) {
+                db.ref('chats/' + currentActiveChatRefId).off('value');
+            }
+            currentActiveChatRefId = activeChatId;
             
-            currentChatListener = db.ref('chats/' + activeChatId).on('value', snapshot => {
+            db.ref('chats/' + activeChatId).on('value', snapshot => {
                 msgArea.innerHTML = ''; 
                 const data = snapshot.val();
                 if(!data) return;
 
-                const isAdmin = (currentUser.isAdmin || currentUser.role === 'admin');
+                const isAdmin = (currentUser.role === 'admin');
 
                 Object.keys(data).forEach(key => {
                     const msg = data[key];
@@ -917,7 +1221,7 @@
                         div.className = 'msg admin-alert'; div.innerHTML = `📢 ${msgBody}`; 
                     } else if (msg.isSystemMsg) {
                         div.className = 'msg'; div.style.cssText = 'background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-left: 4px solid #64748b; align-self: center; text-align: center; font-size: 13px; font-weight: 500; padding: 10px 15px; border-radius: 8px; margin: 6px 0; width: 85%;';
-                        div.innerHTML = `🛡️ <b style="color: #334155;">System Admin</b><br><span style="color: #1e293b; display:inline-block; margin-top:4px;">${msgBody}</span>`;
+                        div.innerHTML = `🛡️ <b style="color: #334155;">System Admin</b><br><span style="color: #1e293b; display:inline-block; margin-top:4px; white-space:pre-wrap;">${msgBody}</span>`;
                     } else { 
                         div.className = `msg ${isMe ? 'sent' : 'received'}`; 
                         
@@ -925,7 +1229,7 @@
                         if(!isMe && activeChatId === 'live') {
                             const senderUser = users.find(u => String(u.mobile) === String(msg.senderId));
                             let senderNameSafe = msg.senderName;
-                            if(senderUser && senderUser.role === 'admin') senderNameSafe = "Admin 🛡️";
+                            if(senderUser && (senderUser.role === 'admin')) senderNameSafe = "Admin";
                             
                             headerHTML += `<div style="display:flex; align-items:center; gap:8px; margin-bottom:6px; padding-bottom:5px; border-bottom:1px solid #f0f0f0;">${generateAvatarHTML(senderUser, 24)}<span style="font-size: 12px; font-weight: bold; color: #128C7E;">${senderNameSafe}</span></div>`;
                         }
@@ -957,9 +1261,11 @@
                 });
                 msgArea.scrollTop = msgArea.scrollHeight;
 
-                if (activeChatId !== 'live') {
+                if (activeChatId !== 'live' && !activeChatId.startsWith('deal_')) {
                     const otherMobile = activeChatId.replace(String(currentUser.mobile), '').replace('_', '');
                     db.ref(`user_chats/${currentUser.mobile}/${otherMobile}`).update({ unread: 0 });
+                } else if(activeChatId.startsWith('deal_')) {
+                    db.ref(`user_chats/${currentUser.mobile}/${activeChatId}`).update({ unread: 0 });
                 }
             });
             
@@ -969,7 +1275,7 @@
         function openMsgMenu(key, text, senderId, senderName, type) {
             selectedMsgKey = key; selectedMsgText = text; selectedMsgSenderId = senderId;
             const isMe = String(senderId) === String(currentUser.mobile);
-            const isAdmin = (currentUser.isAdmin || currentUser.role === 'admin');
+            const isAdmin = (currentUser.role === 'admin');
 
             document.getElementById('btn-edit-msg').style.display = (isMe && type !== 'image') ? 'flex' : 'none';
             
@@ -987,7 +1293,7 @@
         function actionCopy() { navigator.clipboard.writeText(selectedMsgText).then(() => { showToast("Copied! 🌸"); }); closeAllMenus(); }
         
         function actionDelete() { 
-            const isAdmin = (currentUser.isAdmin || currentUser.role === 'admin');
+            const isAdmin = (currentUser.role === 'admin');
             if (isAdmin) {
                 if(confirm("Permanently delete this message?")) { db.ref('chats/' + activeChatId + '/' + selectedMsgKey).remove(); showToast("Permanently Deleted! 🗑️"); }
             } else {
@@ -1020,7 +1326,18 @@
         function cancelReply() { replyTargetData = null; document.getElementById('reply-preview-bar').style.display = 'none'; }
 
         function updateRecentChatRecord(text) {
-            if (activeChatId !== 'live') {
+            if(activeChatId.startsWith('deal_')) {
+                const dealId = activeChatId;
+                const buyerMobile = dealId.split('_')[1];
+                
+                db.ref('deals/' + dealId).once('value').then(snap => {
+                    const deal = snap.val();
+                    if(deal) {
+                        db.ref(`user_chats/${buyerMobile}/${dealId}`).update({ lastMsg: text, time: Date.now() });
+                        db.ref(`user_chats/${deal.sellerMobile}/${dealId}`).update({ lastMsg: text, time: Date.now() });
+                    }
+                });
+            } else if (activeChatId !== 'live') {
                 const otherMobile = activeChatId.replace(String(currentUser.mobile), '').replace('_', '');
                 db.ref(`user_chats/${currentUser.mobile}/${otherMobile}`).update({ lastMsg: text, time: Date.now(), unread: 0 });
                 db.ref(`user_chats/${otherMobile}/${currentUser.mobile}`).once('value').then(snap => {
@@ -1033,8 +1350,8 @@
         }
 
         function sendImageMessage(base64data) { 
-            const isSystemAdmin = (currentUser.isAdmin || currentUser.role === 'admin'); 
-            const sName = isSystemAdmin ? "Admin 🛡️" : currentUser.name;
+            const isSystemAdmin = (currentUser.role === 'admin'); 
+            const sName = isSystemAdmin ? "Admin" : currentUser.name;
             const payload = { senderId: String(currentUser.mobile), senderName: sName, text: base64data, type: 'image', isAdminAlert: false, isSystemMsg: false, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), isRead: false };
             if(replyTargetData) payload.replyTo = replyTargetData;
 
@@ -1053,8 +1370,8 @@
                 updateRecentChatRecord(text); isEditingMsg = false; selectedMsgKey = null; document.getElementById('msg-input').value = ''; return;
             }
 
-            const isSystemAdmin = (currentUser.isAdmin || currentUser.role === 'admin'); 
-            const sName = isSystemAdmin ? "Admin 🛡️" : currentUser.name;
+            const isSystemAdmin = (currentUser.role === 'admin'); 
+            const sName = isSystemAdmin ? "Admin" : currentUser.name;
 
             const payload = { senderId: String(currentUser.mobile), senderName: sName, text: text, type: 'text', isAdminAlert: false, isSystemMsg: false, time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), isRead: false };
             if(replyTargetData) payload.replyTo = replyTargetData;
@@ -1100,11 +1417,217 @@
             }
         }
 
+        /* --- SHOP & ITEM LISTING SYSTEM --- */
+        function openItemPlace() {
+            tempItems = [];
+            if(shopItems) { 
+                Object.keys(shopItems).forEach(k => {
+                    const item = shopItems[k];
+                    if(item.sellerMobile === currentUser.mobile || currentUser.role === 'admin') {
+                        tempItems.push({ key: k, ...item });
+                    }
+                }); 
+            }
+            if(tempItems.length === 0) addTableRow();
+            document.getElementById('item-place-modal').style.display = 'flex';
+            renderItemTable();
+        }
+        function closeItemPlace() { document.getElementById('item-place-modal').style.display = 'none'; }
+        
+        function addTableRow() { tempItems.push({ name: '', qty: 1, price: 0 }); renderItemTable(); }
+        function removeTempItem(i) { tempItems.splice(i, 1); renderItemTable(); }
+        function updateTempItem(i, field, val) { if(field === 'qty' || field === 'price') val = Number(val); tempItems[i][field] = val; }
+        
+        function renderItemTable() {
+            const tbody = document.getElementById('item-table-body');
+            tbody.innerHTML = tempItems.map((item, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><input type="text" class="excel-input" value="${item.name}" onchange="updateTempItem(${i}, 'name', this.value)" placeholder="Name"></td>
+                    <td><input type="number" class="excel-input" value="${item.qty}" onchange="updateTempItem(${i}, 'qty', this.value)" placeholder="Qty" min="0"></td>
+                    <td><input type="number" class="excel-input" value="${item.price}" onchange="updateTempItem(${i}, 'price', this.value)" placeholder="Price" min="0"></td>
+                    <td><button onclick="removeTempItem(${i})" style="color:#E50914; background:none; border:none; font-weight:bold; cursor:pointer; font-size:16px;">X</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function applyToSale() {
+            const updates = {};
+            tempItems.forEach(item => {
+                if(item.name && item.qty > 0) {
+                    const key = item.key || 'item_' + Math.random().toString(36).substring(2,9);
+                    updates[key] = { 
+                        name: item.name, 
+                        qty: item.qty, 
+                        price: item.price,
+                        sellerMobile: item.sellerMobile || currentUser.mobile,
+                        sellerName: item.sellerName || currentUser.name
+                    };
+                }
+            });
+            db.ref('shop_items').once('value', snap => {
+                let allItems = snap.val() || {};
+                if(currentUser.role !== 'admin') {
+                    Object.keys(allItems).forEach(k => {
+                        if(allItems[k].sellerMobile === currentUser.mobile && !updates[k]) {
+                            updates[k] = null; 
+                        }
+                    });
+                }
+                db.ref('shop_items').update(updates).then(() => {
+                    showToast("Applied to Sale Successfully! 🛒");
+                    closeItemPlace();
+                });
+            });
+        }
+
+        function renderShopItems() {
+            const grid = document.getElementById('shop-grid-render');
+            grid.innerHTML = '';
+            let itemsFound = false;
+
+            Object.keys(shopItems).forEach(key => {
+                const item = shopItems[key];
+                if(item.qty <= 0) return; 
+                itemsFound = true;
+                
+                grid.innerHTML += `
+                <div class="shop-card">
+                    <div style="font-weight:800; font-size:18px; color:#128C7E; line-height:1.2;">${item.name}</div>
+                    <div style="color:#555; font-size:13px; margin-top:8px;">Available: <span style="font-weight:bold;">${item.qty}</span></div>
+                    <div style="color:#888; font-size:11px;">Seller: ${item.sellerName}</div>
+                    <div style="color:#111; font-weight:800; font-size:18px; margin-top:4px;">₹${item.price}</div>
+                    <div style="margin-top:12px; display:flex; gap:8px;">
+                        <input type="number" id="buy-qty-${key}" placeholder="Qty" min="1" max="${item.qty}" style="padding:8px 12px; width:70px; border-radius:12px; border:1px solid #ddd; outline:none; font-weight:bold; background:#f8fafc; margin:0;">
+                        <button class="btn-success" style="margin:0; flex:1; padding:8px; border-radius:12px; font-size:14px; box-shadow:0 2px 10px rgba(37,211,102,0.3);" onclick="requestBuy('${key}', '${item.name}', ${item.price}, ${item.qty}, '${item.sellerMobile}')">Buy Now</button>
+                    </div>
+                </div>`;
+            });
+
+            if(!itemsFound) { grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding: 40px 20px; color:#888;">No items in stock right now! 🌸</div>`; }
+        }
+
+        function requestBuy(itemId, itemName, price, availableQty, sellerMobile) {
+            const qtyInput = document.getElementById(`buy-qty-${itemId}`).value;
+            const qtyToBuy = parseInt(qtyInput);
+            if(!qtyToBuy || qtyToBuy <= 0 || qtyToBuy > availableQty) return showToast("Please enter a valid quantity! 🌸");
+            if(sellerMobile === currentUser.mobile) return showToast("You cannot buy your own item! ✨");
+
+            const dealId = 'deal_' + currentUser.mobile + '_' + Date.now();
+            const dealData = { id: dealId, itemId: itemId, itemName: itemName, sellerMobile: sellerMobile, sellerName: shopItems[itemId].sellerName, buyerMobile: currentUser.mobile, buyerName: currentUser.name, qty: qtyToBuy, price: price, totalAmount: qtyToBuy * price, status: 'pending', timestamp: Date.now() };
+            
+            db.ref('deals/' + dealId).set(dealData);
+
+            db.ref(`user_chats/${currentUser.mobile}/${dealId}`).set({ lastMsg: `Deal started for ${itemName}`, time: Date.now(), isDeal: true, dealId: dealId, unread: 0 });
+            db.ref(`user_chats/${sellerMobile}/${dealId}`).set({ lastMsg: `New Deal Request: ${itemName}`, time: Date.now(), isDeal: true, dealId: dealId, unread: 1 });
+
+            db.ref(`chats/${dealId}`).push({ isSystemMsg: true, text: `🛍️ New Deal Request:\n<b>${qtyToBuy}x ${itemName}</b>\nTotal Amount: <b>₹${qtyToBuy * price}</b>` });
+
+            showToast("Buy request sent to Seller! Check chats. ✨");
+            openHomeTab();
+        }
+
+        function handleDeal(action) {
+            const dealId = activeChatId;
+            db.ref('deals/' + dealId).once('value').then(snap => {
+                const deal = snap.val();
+                if(!deal) return;
+                
+                if(action === 'success') {
+                    db.ref(`shop_items/${deal.itemId}/qty`).once('value').then(qSnap => {
+                        let currentQty = Number(qSnap.val()) || 0;
+                        let remain = currentQty - Number(deal.qty);
+                        if(remain < 0) remain = 0;
+                        
+                        db.ref(`shop_items/${deal.itemId}/qty`).set(remain);
+                        db.ref('orders/' + dealId).set({...deal, status: 'success', remainingStock: remain, completedAt: Date.now()});
+                        
+                        // Send official bill to buyer from super admin
+                        sendBillToBuyer(deal);
+                        
+                        cleanUpDealChat(dealId, deal.buyerMobile, deal.sellerMobile);
+                        showToast("Deal Successful! Stock Updated & Bill Sent. ✨");
+                    });
+                } else {
+                    cleanUpDealChat(dealId, deal.buyerMobile, deal.sellerMobile);
+                    showToast("Deal Cancelled! 🚫");
+                }
+                db.ref('deals/' + dealId).remove();
+            });
+        }
+        
+        function sendBillToBuyer(deal) {
+            const systemAdminMobile = 'ankitankit';
+            const buyerAdminChatId = [deal.buyerMobile, systemAdminMobile].sort().join('_');
+            const billMsg = `🧾 *OFFICIAL BILL*\n\n🛍️ Item: ${deal.itemName}\n🔢 Qty: ${deal.qty}\n🧑‍💼 Seller: ${deal.sellerName}\n💵 Total: ₹${deal.totalAmount}\n\n✅ PAID SUCCESS`;
+            
+            db.ref(`chats/${buyerAdminChatId}`).push({
+                senderId: systemAdminMobile, senderName: 'Admin', text: billMsg, type: 'text', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), isSystemMsg: true, init: false
+            });
+            db.ref(`user_chats/${deal.buyerMobile}/${systemAdminMobile}`).update({ lastMsg: '🧾 Bill Received', time: Date.now(), unread: 1 });
+        }
+
+        function cleanUpDealChat(dealId, buyerMobile, sellerMobile) {
+            db.ref(`chats/${dealId}`).remove();
+            db.ref(`user_chats/${buyerMobile}/${dealId}`).remove();
+            db.ref(`user_chats/${sellerMobile}/${dealId}`).remove();
+            window.history.back();
+        }
+
+        /* ADMIN TOOLS */
         function openAdminPanel() { switchScreen('screen-admin'); document.getElementById('admin-grid').style.display = 'grid'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none'); document.getElementById('admin-title').innerText = "Admin Tools"; }
-        function closeAdminPanel() { if (document.getElementById('admin-grid').style.display === 'none') openAdminPanel(); else window.history.back(); }
+        function closeAdminPanel() { if (document.getElementById('admin-grid').style.display === 'none') { openAdminPanel(); } else { switchScreen('screen-chat'); } }
+        
         function openAdminSection(section) {
             document.getElementById('admin-grid').style.display = 'none'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
-            if (section === 'users') { document.getElementById('admin-title').innerText = "User Management"; document.getElementById('admin-sec-users').style.display = 'block'; renderAdminUsers(); } else if (section === 'tickets') { document.getElementById('admin-title').innerText = "Support Desk"; document.getElementById('admin-sec-tickets').style.display = 'block'; renderAdminTickets(); } else if (section === 'analytics') { document.getElementById('admin-title').innerText = "Analytics"; document.getElementById('admin-sec-analytics').style.display = 'block'; document.getElementById('stat-total-users').innerText = users.length; document.getElementById('stat-active-users').innerText = users.filter(u => !u.isBanned).length; } else if (section === 'broadcast') { document.getElementById('admin-title').innerText = "Broadcast Message"; document.getElementById('admin-sec-broadcast').style.display = 'block'; } else if (section === 'chatcontrol') { document.getElementById('admin-title').innerText = "Chat Control"; document.getElementById('admin-sec-chatcontrol').style.display = 'block'; } else if (section === 'activity') { document.getElementById('admin-title').innerText = "Flow Map"; document.getElementById('admin-sec-activity').style.display = 'block'; renderActivityLogs(); }
+            if (section === 'orders') { document.getElementById('admin-title').innerText = "Sales & Orders"; document.getElementById('admin-sec-orders').style.display = 'block'; renderAdminOrders(); }
+            else if (section === 'users') { document.getElementById('admin-title').innerText = "User Management"; document.getElementById('admin-sec-users').style.display = 'block'; renderAdminUsers(); } 
+            else if (section === 'tickets') { document.getElementById('admin-title').innerText = "Support Desk"; document.getElementById('admin-sec-tickets').style.display = 'block'; renderAdminTickets(); } 
+            else if (section === 'chatcontrol') { document.getElementById('admin-title').innerText = "Chat Control"; document.getElementById('admin-sec-chatcontrol').style.display = 'block'; } 
+            else if (section === 'activity') { document.getElementById('admin-title').innerText = "Flow Map"; document.getElementById('admin-sec-activity').style.display = 'block'; renderActivityLogs(); }
+        }
+
+        function renderAdminOrders() {
+            let searchTerm = document.getElementById('search-orders').value.toLowerCase();
+            db.ref('orders').once('value', snap => {
+                const orders = snap.val() || {};
+                const list = document.getElementById('admin-order-list-render');
+                
+                let relevantOrderKeys = Object.keys(orders);
+                if (currentUser.role !== 'admin') {
+                    relevantOrderKeys = relevantOrderKeys.filter(k => orders[k].sellerMobile === currentUser.mobile);
+                }
+                
+                relevantOrderKeys = relevantOrderKeys.filter(k => {
+                    const o = orders[k];
+                    return o.itemName.toLowerCase().includes(searchTerm) || o.buyerName.toLowerCase().includes(searchTerm) || o.sellerName.toLowerCase().includes(searchTerm);
+                });
+                
+                relevantOrderKeys.sort((a, b) => orders[b].completedAt - orders[a].completedAt);
+                
+                if(relevantOrderKeys.length === 0) { list.innerHTML = "<p style='color:#888;'>No orders found. 🌸</p>"; document.getElementById('total-profit-display').innerText = `Total Revenue: ₹0`; return; }
+
+                let totalProfit = 0; let html = '';
+                relevantOrderKeys.forEach(k => {
+                    const o = orders[k];
+                    totalProfit += o.totalAmount;
+                    const dateStr = new Date(o.completedAt || o.timestamp).toLocaleString();
+                    html += `
+                        <div class="admin-list-item" style="border-left-color: #25D366; background:#1a1a1a;">
+                            <div style="font-size:11px; color:#888; float:right;">${dateStr}</div>
+                            <div style="font-weight:bold; color:white; font-size:15px;">${o.itemName} (x${o.qty})</div>
+                            <div style="color:#aaa; font-size:13px; margin-top:4px;">Buyer: ${o.buyerName} (${o.buyerMobile})</div>
+                            ${currentUser.role === 'admin' ? `<div style="color:#aaa; font-size:13px; margin-top:2px;">Seller: ${o.sellerName} (${o.sellerMobile})</div>` : ''}
+                            <div style="display:flex; justify-content:space-between; margin-top:8px; border-top:1px solid #333; padding-top:8px;">
+                                <span style="color:#25D366; font-weight:bold;">Profit: ₹${o.totalAmount}</span>
+                                <span style="color:#fbbf24; font-size:13px;">Remaining Stock: ${o.remainingStock}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('total-profit-display').innerText = `Total Revenue: ₹${totalProfit}`;
+                list.innerHTML = html;
+            });
         }
 
         function backupAllChats() { db.ref('chats').once('value').then(snap => { const data = snap.val(); if(!data) { showToast("No chats found to backup. 🌸"); return; } const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `BTD_Chat_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); showToast("Backup Downloaded Successfully! ✨"); }); }
@@ -1134,29 +1657,57 @@
         function closeGhostView() { db.ref('chats/').off(); openAdminSection('activity'); }
 
         function renderAdminTickets() {
+            let searchTerm = document.getElementById('search-tickets').value.toLowerCase();
             const list = document.getElementById('admin-ticket-list-render'); const ticketKeys = Object.keys(ticketsData);
-            if (ticketKeys.length === 0) { list.innerHTML = "<p style='color:#888;'>No support tickets yet. 🌸</p>"; return; }
-            list.innerHTML = ticketKeys.reverse().map(key => {
+            
+            let filteredKeys = ticketKeys.filter(k => {
+                let t = ticketsData[k];
+                return k.toLowerCase().includes(searchTerm) || t.name.toLowerCase().includes(searchTerm) || t.issue.toLowerCase().includes(searchTerm);
+            });
+            
+            if (filteredKeys.length === 0) { list.innerHTML = "<p style='color:#888;'>No support tickets found. 🌸</p>"; return; }
+            list.innerHTML = filteredKeys.reverse().map(key => {
                 const t = ticketsData[key];
                 return `<div class="admin-list-item" style="${t.reply ? 'border-color: #25D366; opacity: 0.7;' : 'border-color: #f59e0b;'}"><div style="width: 100%; margin-bottom: 8px;"><span style="color:#E50914; font-size:12px; font-weight:bold; float:right;">${key}</span><strong style="color:white; font-size:16px;">${t.name}</strong> <span style="color:#888; font-size:12px;">(${t.mobile})</span></div><div style="background: #111; padding: 10px; border-radius: 8px; color: #ddd; font-size: 14px; margin-bottom: 10px;">${t.issue}</div>${t.reply ? `<p style="color:#25D366; font-size:13px; font-weight:bold;">✅ Replied: ${t.reply}</p>` : `<div style="display:flex; gap:10px;"><input type="text" id="reply-input-${key}" placeholder="Type reply..." style="flex:1; padding:10px; border-radius:8px; border:none; background:#222; color:white; font-size:13px;"><button class="btn-success" style="margin:0; width:auto; padding:10px 15px; border-radius:8px;" onclick="sendTicketReply('${key}')">Send</button></div>`}</div>`;
             }).join('');
         }
         function sendTicketReply(ticketId) { const reply = document.getElementById(`reply-input-${ticketId}`).value.trim(); if(!reply) { showToast("Please type a reply first! 🌸"); return; } db.ref(`tickets/${ticketId}`).update({ reply: reply, status: 'Resolved' }); showToast("Reply sent to user! ✨"); }
+        
         function renderAdminUsers() {
-            const list = document.getElementById('admin-user-list-render'); if (users.length === 0) { list.innerHTML = "<p style='color:#888;'>No users found.</p>"; return; }
-            list.innerHTML = users.map(u => {
+            let searchTerm = document.getElementById('search-users').value.toLowerCase();
+            const list = document.getElementById('admin-user-list-render'); 
+            
+            let filteredUsers = users.filter(u => u.name.toLowerCase().includes(searchTerm) || String(u.mobile).includes(searchTerm));
+            
+            if (filteredUsers.length === 0) { list.innerHTML = "<p style='color:#888;'>No users found.</p>"; return; }
+            list.innerHTML = filteredUsers.map(u => {
                 let allDataHtml = ''; for (let key in u) { if(key !== 'dpUrl' && typeof u[key] !== 'object') allDataHtml += `<div style="font-size:13px; color:#ddd; margin-bottom:5px; padding-bottom:4px; border-bottom: 1px solid #2a2a2a;"><span style="color:#E50914; font-weight:600; text-transform: capitalize; display:inline-block; width: 80px;">${key}:</span> <span style="color:#fff;">${u[key]}</span></div>`; }
-                return `<div class="admin-list-item" style="${u.isBanned ? 'border-color: #555; opacity: 0.6;' : ''}"><div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;"><strong style="color:white; font-size:16px;">${u.name}</strong><button class="btn-danger-small" onclick="toggleBanUser('${u.mobile}', ${u.isBanned})" style="${u.isBanned ? 'background:#555;' : ''}">${u.isBanned ? 'Unban' : 'Ban'}</button></div><div style="width: 100%; background: #111; padding: 12px; border-radius: 8px; border: 1px solid #333;">${allDataHtml}</div></div>`;
+                
+                return `
+                <div class="admin-list-item" style="${u.isBanned ? 'border-color: #555; opacity: 0.6;' : ''}">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <strong style="color:white; font-size:16px;">${u.name}</strong>
+                        <div style="display:flex; gap:8px;">
+                            <select onchange="changeUserRole('${u.mobile}', this.value)" style="background:#222; color:white; border:1px solid #444; border-radius:12px; padding:6px 10px; font-size:12px; outline:none;">
+                                <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
+                                <option value="seller" ${u.role === 'seller' ? 'selected' : ''}>Seller Admin</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Super Admin</option>
+                            </select>
+                            <button class="btn-danger-small" onclick="toggleBanUser('${u.mobile}', ${u.isBanned})" style="${u.isBanned ? 'background:#555;' : ''}">${u.isBanned ? 'Unban' : 'Ban'}</button>
+                        </div>
+                    </div>
+                    <div style="width: 100%; background: #111; padding: 12px; border-radius: 8px; border: 1px solid #333;">${allDataHtml}</div>
+                </div>`;
             }).join('');
         }
         function toggleBanUser(mobile, isCurrentlyBanned) { if(String(mobile) === 'ankitankit') { showToast("Super Admin cannot be banned! 😅"); return; } db.ref('users/' + mobile).update({ isBanned: !isCurrentlyBanned }); showToast(isCurrentlyBanned ? "User Unbanned! ✅" : "User Banned! 🚫"); setTimeout(renderAdminUsers, 500); }
-        function sendAdminBroadcast() { const msg = document.getElementById('broadcast-msg').value.trim(); if(!msg) { showToast("Please type a message first! 🌸"); return; } db.ref('chats/live').push({ senderId: 'admin', senderName: 'SYSTEM', text: msg, isAdminAlert: true }); showToast("Broadcast Sent Successfully! 🚀"); document.getElementById('broadcast-msg').value = ''; setTimeout(closeAdminPanel, 1000); }
+        function changeUserRole(mobile, newRole) { if(String(mobile) === 'ankitankit') { showToast("Super Admin role locked! 😅"); return; } db.ref('users/' + mobile).update({ role: newRole }); showToast("User Role Updated! ✅"); }
 
         function openProfile() { switchScreen('screen-profile'); }
         function toggleDpInput() { const dpSection = document.getElementById('dp-input-section'); dpSection.style.display = dpSection.style.display === 'none' ? 'block' : 'none'; }
         function saveProfile() { 
-            const newName = document.getElementById('prof-name').value.trim(); const newDpUrl = document.getElementById('prof-dp-url').value.trim(); const newBio = document.getElementById('prof-bio').value.trim();
-            if(newName) { db.ref('users/' + currentUser.mobile).update({ name: newName, dpUrl: newDpUrl, bio: newBio }); currentUser.name = newName; currentUser.dpUrl = newDpUrl; currentUser.bio = newBio; document.getElementById('my-profile-img').src = getAvatarUrl(currentUser); showToast("Profile Updated! 🌸"); window.history.back(); } 
+            const newDpUrl = document.getElementById('prof-dp-url').value.trim(); const newBio = document.getElementById('prof-bio').value.trim();
+            db.ref('users/' + currentUser.mobile).update({ dpUrl: newDpUrl, bio: newBio }); currentUser.dpUrl = newDpUrl; currentUser.bio = newBio; document.getElementById('my-profile-img').src = getAvatarUrl(currentUser); showToast("Profile Updated! 🌸"); window.history.back(); 
         }
     </script>
 </body>
