@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BTD Community Edition 3.1</title>
     
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script>
         function reportSeller(sellerMobile) {
             let reason = prompt("Why are you reporting this seller?");
             if(reason) {
@@ -42,10 +46,7 @@
                 }
             }
         }, 3000);
-
-</script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    </script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -53,7 +54,6 @@
         html, body { height: 100%; overflow: hidden; background-color: #e2e8f0; overscroll-behavior: none; -webkit-overscroll-behavior: none; }
         body { display: flex; justify-content: center; align-items: center; }
         
-        /* App Container with subtle colorful gradient so glass is visible */
         .app-container { background: radial-gradient(circle at 10% 10%, #e9d5ff 0%, transparent 60%), radial-gradient(circle at 90% 10%, #a7f3d0 0%, transparent 60%), radial-gradient(circle at 50% 90%, #bfdbfe 0%, transparent 60%), #ffffff !important; width: 100%; height: 100%; max-width: 420px; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transition: background 0.3s; }
         @media (min-width: 500px) { .app-container { height: 95vh; border-radius: 30px; border: 4px solid white; } }
 
@@ -61,26 +61,8 @@
         .splash-title { font-size: 72px; font-weight: 800; letter-spacing: 2px; margin: 0; animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         @keyframes popUp { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* Liquid Glass Base Class */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        }
-
-        /* Smooth Bouncy Banner Glass */
-        .glass-banner {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-origin: center;
-        }
+        .glass-panel { background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); }
+        .glass-banner { background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1)); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: center; }
         .glass-banner:active { transform: scale(0.96); }
 
         .header { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); color: #111; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 700; z-index: 10; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.6); transition: 0.3s; }
@@ -101,26 +83,11 @@
         textarea { border-radius: 20px; resize: none; min-height: 100px; }
         input:focus, textarea:focus { background: rgba(255,255,255,0.8); border-color: #25D366; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.15), inset 0 2px 5px rgba(0,0,0,0.02); transform: translateY(-2px); }
         
-        /* Transparent Liquid Glass Override for Buttons */
         .btn-main, .btn-secondary, .btn-danger, .btn-success, .action-btn, .send-btn, .btn-danger-small { 
-            background: rgba(255, 255, 255, 0.15) !important; 
-            backdrop-filter: blur(25px) !important; 
-            -webkit-backdrop-filter: blur(25px) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.4) !important; 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important; 
-            color: #111 !important; 
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
-            transform-origin: center; 
-            outline: none;
-            border-radius: 24px;
-            padding: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(25px) !important; -webkit-backdrop-filter: blur(25px) !important; border: 1px solid rgba(255, 255, 255, 0.4) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important; color: #111 !important; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: center; outline: none; border-radius: 24px; padding: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
         }
         .btn-danger, .btn-danger-small { color: #E50914 !important; border-color: rgba(229,9,20,0.3) !important; }
         .btn-success, .send-btn { color: #16a34a !important; border-color: rgba(22,163,74,0.3) !important; }
-        
         .btn-main:active, .btn-secondary:active, .btn-danger:active, .btn-success:active, .action-btn:active, .send-btn:active, .btn-danger-small:active { transform: scale(0.92); }
 
         .btn-danger-small { padding: 8px 15px; border-radius: 16px; font-size: 13px; }
@@ -137,7 +104,6 @@
         .jelly-search::placeholder { color: rgba(255, 255, 255, 0.85); }
         .jelly-search:focus { transform: scale(1.02); box-shadow: 0 12px 25px rgba(37, 211, 102, 0.4); background: linear-gradient(135deg, rgba(32, 184, 88, 0.8), rgba(29, 160, 77, 0.8)); }
 
-        /* SELLER THEME (YELLOW) */
         .seller-theme .app-container { background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%) !important; }
         .seller-theme .auth-top, .seller-theme #splash-screen { background: linear-gradient(135deg, rgba(234, 179, 8, 0.9), rgba(202, 138, 4, 0.9)); }
         .seller-theme .jelly-search { background: linear-gradient(135deg, rgba(234, 179, 8, 0.8), rgba(202, 138, 4, 0.8)); color: #111; box-shadow: 0 8px 20px rgba(234, 179, 8, 0.25); }
@@ -208,7 +174,6 @@
         .nav-item.active { background: linear-gradient(135deg, rgba(37, 211, 102, 0.9), rgba(18, 140, 126, 0.9)); color: white; transform: translateY(-8px) scale(1.05); box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4), inset 0 1px 1px rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.5); }
         .nav-badge { position: absolute; top: 0; right: 0; background: linear-gradient(135deg, #f43f5e, #e11d48); color: white; font-size: 10px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(225,29,72,0.4); display: none;}
 
-        /* SHOP UI */
         #screen-shop { padding-bottom: 110px; overflow-y: auto; }
         .shop-header { padding: 20px; display: flex; align-items: center; justify-content: space-between; }
         .shop-header-dp { width: 45px; height: 45px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -218,8 +183,7 @@
         .shop-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.6); border-radius: 24px; padding: 18px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .shop-card:active { transform: scale(0.95); }
         
-        /* Item Place Excel UI */
-        .item-place-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 4000; display: flex; justify-content: center; align-items: center; }
+        .item-place-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 4000; display: flex; justify-content: center; align-items: center; padding: 20px;}
         .item-place-box { background: rgba(255,255,255,0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.8); width: 92%; max-width: 450px; border-radius: 30px; padding: 25px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
         .excel-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
         .excel-table th { background: rgba(255,255,255,0.4); padding: 12px 10px; text-align: left; font-size: 13px; color: #475569; border-bottom: 2px solid rgba(0,0,0,0.05); }
@@ -239,18 +203,12 @@
         #toast { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); background: rgba(30,30,30,0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 14px 28px; border-radius: 30px; font-size: 14px; font-weight: 600; transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 5000; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
         #toast.show { bottom: 100px; } 
 
-        /* NEW JELLY ANIMATION & LIQUID GLASS ELEMENTS */
-        @keyframes jellyBounce {
-            0% { transform: scale(1); }
-            30% { transform: scale(0.92); }
-            50% { transform: scale(1.03); }
-            70% { transform: scale(0.97); }
-            100% { transform: scale(1); }
-        }
+        @keyframes jellyBounce { 0% { transform: scale(1); } 30% { transform: scale(0.92); } 50% { transform: scale(1.03); } 70% { transform: scale(0.97); } 100% { transform: scale(1); } }
         .jelly-anim { transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); }
         .jelly-anim:active { animation: jellyBounce 0.4s ease; transform: scale(0.92); }
 
-        .glass-list-item { display: flex; align-items: center; padding: 15px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; }
+        .glass-list-item { display: flex; align-items: center; padding: 15px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; transition: all 0.3s ease; }
+        .glass-list-item:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .glass-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.8); flex-shrink: 0; background: rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; font-weight: bold; color: #128C7E;}
         .glass-content { flex: 1; margin-left: 15px; overflow: hidden; }
         .glass-title { font-weight: 700; color: #111; font-size: 15px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -262,35 +220,18 @@
         .development-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 99999 !important; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .development-modal { background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.4)); border: 1px solid rgba(255,255,255,0.9); border-radius: 30px; padding: 30px 20px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); max-width: 320px; }
 
-        /* --- FRIDAY OVERRIDE V3.1 INJECTIONS --- */
-        @keyframes globalPopAnim {
-            0% { transform: scale(0.9); opacity: 0; }
-            70% { transform: scale(1.02); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes globalPopAnim { 0% { transform: scale(0.9); opacity: 0; } 70% { transform: scale(1.02); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         .screen.active .glass-banner, .screen.active .glass-panel, .screen.active .chat-item, .screen.active .shop-card, .screen.active .glass-list-item { animation: globalPopAnim 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-        .btn-main, .btn-secondary, .btn-danger, .btn-success, .action-btn, .send-btn, .btn-danger-small { position: relative; overflow: hidden; }
-        .btn-main::after, .btn-secondary::after, .btn-danger::after, .btn-success::after, .action-btn::after, .send-btn::after, .btn-danger-small::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-20deg); animation: glassShineEffect 3s infinite; z-index: 1; pointer-events: none;
-        }
+        .btn-main::after, .btn-secondary::after, .btn-danger::after, .btn-success::after, .action-btn::after, .send-btn::after, .btn-danger-small::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%); transform: skewX(-20deg); animation: glassShineEffect 3s infinite; z-index: 1; pointer-events: none; }
         @keyframes glassShineEffect { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         .shiny-star { animation: starShine 2s infinite ease-in-out; }
-        @keyframes starShine {
-            0% { filter: drop-shadow(0 0 2px rgba(250, 204, 21, 0.5)) scale(1); transform: rotate(0deg); }
-            50% { filter: drop-shadow(0 0 10px rgba(250, 204, 21, 1)) scale(1.2); transform: rotate(15deg); }
-            100% { filter: drop-shadow(0 0 2px rgba(250, 204, 21, 0.5)) scale(1); transform: rotate(0deg); }
-        }
+        @keyframes starShine { 0% { filter: drop-shadow(0 0 2px rgba(250, 204, 21, 0.5)) scale(1); transform: rotate(0deg); } 50% { filter: drop-shadow(0 0 10px rgba(250, 204, 21, 1)) scale(1.2); transform: rotate(15deg); } 100% { filter: drop-shadow(0 0 2px rgba(250, 204, 21, 0.5)) scale(1); transform: rotate(0deg); } }
 
-        /* Theme 3.0 Overrides */
         body.theme-3-active .app-container { background: #ffffff !important; }
         body.theme-3-active { background-color: #f0f2f5 !important; }
-        body.theme-3-active .glass-panel, body.theme-3-active .glass-banner, body.theme-3-active .glass-list-item { 
-            background: white !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid #f0f0f0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; 
-        }
+        body.theme-3-active .glass-panel, body.theme-3-active .glass-banner, body.theme-3-active .glass-list-item { background: white !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid #f0f0f0 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important; }
         body.theme-3-active .header { background: #ffffff !important; backdrop-filter: none !important; border-bottom: 1px solid #f0f0f0 !important; }
         body.theme-3-active .chat-item { background: #fff !important; backdrop-filter: none !important; border: none !important; border-bottom: 1px solid #f0f0f0 !important; border-radius: 0 !important; margin: 0 !important; padding: 14px 20px !important;}
         body.theme-3-active .chat-list { background: #fff !important; }
@@ -374,11 +315,9 @@
                     <button class="header-icon-btn jelly-anim" onclick="openSettingsMenu()" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
                 </div>
             </div>
-            
             <div style="padding: 15px 20px; background: inherit; border-bottom: 1px solid rgba(255,255,255,0.4);">
                 <input type="text" id="user-search-input" class="jelly-search" placeholder="Search Chats..." onkeyup="filterUsers()">
             </div>
-                
             <div class="chat-list" id="chat-list">
                 <div id="dynamic-user-list"></div>
             </div>
@@ -393,8 +332,7 @@
             <div class="shop-search-area" style="padding: 0 20px; margin-top:15px;">
                 <input type="text" class="jelly-search" placeholder="Search Items">
             </div>
-            <div class="shop-grid" id="shop-grid-render">
-                </div>
+            <div class="shop-grid" id="shop-grid-render"></div>
         </div>
 
         <div id="screen-notifications" class="screen">
@@ -402,62 +340,37 @@
                 <span>Notifications</span>
                 <button class="header-icon-btn jelly-anim" onclick="clearNotifications()" title="Clear All" style="color:#E50914;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
             </div>
-            <div id="notification-list-render" style="padding: 20px; overflow-y: auto; flex: 1; padding-bottom: 110px;">
-                </div>
+            <div id="notification-list-render" style="padding: 20px; overflow-y: auto; flex: 1; padding-bottom: 110px;"></div>
         </div>
 
         <div id="screen-mail" class="screen" style="position: relative;">
             <div style="padding: 15px 20px; background: inherit; z-index: 10;">
-                <div class="glass-banner jelly-anim" style="display: flex; align-items: center; padding: 10px 15px; border-radius: 30px; justify-content: space-between; background: rgba(255,255,255,0.4); backdrop-filter: blur(20px);">
-                    <button style="background:none; border:none; color:#555; outline:none; cursor:pointer;" onclick="showToast('Menu feature incoming...')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-                    <input type="text" placeholder="Search in emails..." style="border:none; background:transparent; box-shadow:none; padding:0 10px; margin:0; flex:1; outline:none; color:#111; font-weight:600;">
-                    <img id="mail-profile-icon" src="" style="width:32px; height:32px; border-radius:50%; border:2px solid #fff; cursor:pointer;" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=User'" onclick="openSettingsMenu()">
-                </div>
-            </div>
-            
-            <div id="fake-mail-overlay" class="development-overlay" style="display: none;">
-                <div class="development-modal glass-panel jelly-anim">
-                    <div style="font-size: 40px; margin-bottom: 15px; color: #3b82f6;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 50px; height: 50px; margin: 0 auto;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    </div>
-                    <h3 style="color: #111; margin-bottom: 10px; font-weight: 800;">Under Development</h3>
-                    <p style="color: #555; font-size: 14px; margin-bottom: 25px; font-weight: 600;">This feature is under development and right now not available.</p>
-                    <button class="btn-main jelly-anim" style="width: 100%; box-shadow: 0 8px 20px rgba(59,130,246,0.3);" onclick="hideUnderDevPopup()">I understand</button>
+                <div class="glass-banner jelly-anim" style="display: flex; align-items: center; padding: 10px 15px; border-radius: 30px; justify-content: space-between; background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <button style="background:none; border:none; outline:none; cursor:pointer; display:flex; align-items:center; gap:5px;" onclick="openCreateBatchMailPopup()" title="Generate New IDs">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 22px; height: 22px; color: #25D366;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </button>
+                    <input type="text" id="mail-search-input" placeholder="Search live emails..." onkeyup="renderTempInboxView()" style="border:none; background:transparent; box-shadow:none; padding:0 10px; margin:0; flex:1; outline:none; color:#111; font-weight:600; font-size:14px;">
+                    <img id="mail-profile-icon" src="" style="width:32px; height:32px; border-radius:50%; border:2px solid #fff; cursor:pointer;" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=User'" onclick="openMyFakeIdsPopup()" title="My Generated IDs">
                 </div>
             </div>
 
-            <div style="padding: 15px 20px; overflow-y: auto; flex: 1; padding-bottom: 110px; display: flex; flex-direction: column;">
-                <div style="font-weight: 700; color: #555; font-size: 13px; margin-bottom: 10px; margin-left: 5px;">Primary Inbox</div>
-                
-                <div class="glass-list-item jelly-anim" onclick="showUnderDevPopup()">
-                    <div class="glass-avatar" style="background: linear-gradient(135deg, #a78bfa, #818cf8); color: white;">F</div>
-                    <div class="glass-content">
-                        <div class="glass-title">noreply@fakemail.com</div>
-                        <div class="glass-desc">Welcome to your new temporary inbox! Secure and private.</div>
-                    </div>
-                    <div class="glass-trailing">
-                        <span>Just now</span>
-                        <div class="glass-unread-dot"></div>
-                    </div>
-                </div>
+            <div style="padding: 15px 20px; overflow-y: auto; flex: 1; padding-bottom: 110px; display: flex; flex-direction: column;">  
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 5px;">  
+                    <div style="font-weight: 800; color: #111; font-size: 16px;" id="temp-mail-header-title">Unified Inbox</div>  
+                    <button onclick="openMyFakeIdsPopup()" class="jelly-anim" style="background: linear-gradient(135deg, #25D366, #128C7E); color: white; border: none; padding: 6px 14px; border-radius: 14px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(37,211,102,0.2);">  
+                        My IDs (<span id="my-fake-ids-count">0</span>)  
+                    </button>  
+                </div>  
 
-                <div class="glass-list-item jelly-anim" onclick="showUnderDevPopup()">
-                    <div class="glass-avatar" style="background: linear-gradient(135deg, #fbcfe8, #f43f5e); color: white;">A</div>
-                    <div class="glass-content">
-                        <div class="glass-title">System Admin</div>
-                        <div class="glass-desc">Your Fake Mail ID is ready to use for signups.</div>
-                    </div>
-                    <div class="glass-trailing">
-                        <span>2 mins ago</span>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="jelly-anim" style="position: absolute; bottom: 100px; right: 20px; z-index: 10; background: rgba(255,255,255,0.25); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.6); color: #111; font-weight: bold; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); cursor: pointer; font-size: 28px; outline:none;" onclick="openMailFeatures()">
-                +
-            </button>
+                <div id="temp-mail-list-render">  
+                    <p style="text-align:center; color:#888; margin-top:20px; font-weight:600;">Loading real-time inbox...</p>  
+                </div>  
+            </div>  
+
+            <button class="jelly-anim" style="position: absolute; bottom: 100px; right: 20px; z-index: 10; background: rgba(255,255,255,0.95); backdrop-filter: blur(25px); border: 2px solid #25D366; color: #128C7E; font-weight: bold; width: 60px; height: 60px; border-radius: 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); cursor: pointer; font-size: 28px; outline:none;" onclick="openCreateBatchMailPopup()" title="Create Sequential IDs">  
+                +  
+            </button>  
         </div>
-
         <div id="main-bottom-nav" class="bottom-nav">
             <div id="nav-home" class="nav-item active" onclick="openHomeTab()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
             <div id="nav-shop" class="nav-item" onclick="openShopTab()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div>
@@ -738,6 +651,48 @@
             </div>
         </div>
 
+        <div id="create-batch-mail-popup" class="item-place-modal" style="display:none; z-index: 6000;">
+            <div class="glass-panel" style="text-align:center; max-width: 340px;">
+                <h3 style="color:#111; margin-bottom: 5px;">Generate Custom IDs</h3>
+                <p style="font-size:13px; color:#555; margin-bottom: 20px; font-weight:600;">Base username aur count set karein.</p>
+                <div style="text-align:left; margin-bottom:12px;">  
+                    <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">Base Username:</label>  
+                    <div style="display:flex; align-items:center; background:rgba(0,0,0,0.03); border-radius:16px; border:1px solid rgba(0,0,0,0.1); padding-right:15px; margin-top:4px;">  
+                        <input type="text" id="batch-base-name" class="excel-input jelly-anim" placeholder="e.g. ankit" style="border:none; background:transparent; box-shadow:none; margin-bottom:0;">  
+                        <span style="color:#888; font-weight:bold; font-size:13px;">[X]@im2.in</span>  
+                    </div>  
+                </div>  
+                <div style="text-align:left; margin-bottom:20px;">  
+                    <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">Kitni IDs banani hain? (Max 100):</label>  
+                    <input type="number" id="batch-count" class="excel-input jelly-anim" value="10" min="1" max="100" style="margin-top:4px; border-radius:16px;">  
+                </div>  
+                <button class="btn-main jelly-anim" style="width:100%; margin-bottom:12px;" onclick="generateBatchFakeMails()">Create IDs ✨</button>  
+                <button class="btn-secondary jelly-anim" style="width:100%; margin:0; color:#E50914;" onclick="closeCreateBatchMailPopup()">Cancel</button>  
+            </div>  
+        </div>  
+
+        <div id="my-fake-ids-popup" class="item-place-modal" style="display:none; z-index: 6000;">  
+            <div class="glass-panel" style="max-width: 380px; display:flex; flex-direction:column; max-height:80vh;">  
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">  
+                    <h3 style="color:#111; margin:0;">My Custom IDs</h3>  
+                    <button onclick="closeMyFakeIdsPopup()" class="jelly-anim" style="background:none; border:none; color:#E50914; font-size:18px; font-weight:bold; cursor:pointer; outline:none;">✖</button>  
+                </div>  
+                <p style="font-size:12px; color:#666; margin-bottom:12px;">In sabhi IDs par aane wali mails real-time Unified Inbox mein show hongi 💕</p>  
+                <div id="my-fake-ids-render-list" style="overflow-y:auto; flex:1; margin-bottom:15px; padding-right:5px; display:flex; flex-direction:column; gap:8px;"></div>  
+                <button class="btn-main jelly-anim" style="width:100%; margin-top:auto;" onclick="openCreateBatchMailPopup()">+ Create More IDs</button>  
+            </div>  
+        </div>  
+
+        <div id="email-detail-modal" class="item-place-modal" style="display:none; z-index: 6500;">  
+            <div class="glass-panel jelly-anim" style="max-width: 400px;">  
+                <h3 id="email-detail-subject" style="color:#111; margin-bottom: 8px; font-size: 18px; font-weight:800;">Subject</h3>  
+                <div style="font-size:13px; color:#475569; margin-bottom: 2px;" id="email-detail-from">From: </div>  
+                <div style="font-size:12px; color:#128C7E; font-weight:bold; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 10px;" id="email-detail-to">To: </div>  
+                <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05); max-height: 300px; overflow-y: auto; font-size: 14px; color: #333; white-space: pre-wrap; word-break: break-word; line-height: 1.5;" id="email-detail-body">  
+                </div>  
+                <button class="btn-main jelly-anim" style="width:100%; margin-top:20px;" onclick="closeFakeEmailDetail()">Close</button>  
+            </div>  
+        </div>
         <div class="menu-overlay" id="menu-overlay" onclick="closeAllMenus()"></div>
         
         <div id="msg-action-menu">
@@ -761,18 +716,6 @@
             <button class="action-btn jelly-anim" id="btn-pin-chat" onclick="actionPinChat()">Pin/Unpin</button>
             <button class="action-btn danger jelly-anim" onclick="actionDeleteChat()">Delete Chat</button>
         </div>
-        
-        <div id="mail-action-menu">
-            <div style="text-align:center; width:40px; height:5px; background:rgba(0,0,0,0.2); border-radius:10px; margin: 0 auto 10px auto;"></div>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">Get a new fake mail id <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/generate</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">To know your current fake mail id <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/id</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">To setup a custom fake mail id <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/set</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">add/update recovery phone number <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/phone</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">Manage custom domains <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/domain</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">Manage Blocklist <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/block</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">About this bot <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/about</span></button>
-            <button class="action-btn jelly-anim" onclick="showUnderDevPopup()">Transfer Address <span style="margin-left:auto; font-size:12px; color:#888; font-weight:600;">/transfer</span></button>
-        </div>
 
         <div id="toast"></div>
     </div>
@@ -784,11 +727,9 @@
 
         let users = []; let ticketsData = {}; let activityLogs = []; let isActivityListening = false; let myRecentChats = {}; let myNotifications = {};
         let currentUser = null; let activeChatId = null; let activeChatName = null; 
-        
         let currentChatListener = null; let currentActiveChatRefId = null; 
         let selectedMsgKey = null; let selectedMsgText = null; let selectedMsgSenderId = null;
         let replyTargetData = null; let isEditingMsg = false; let currentViewingProfileMobile = null; 
-        
         let longPressTimer; let isLongPress = false; let selectedChatListMobile = null;
         const PURPLE_HEART_REGEN_MS = 34560000; 
 
@@ -796,6 +737,13 @@
         let pendingSignupUser = null;
         
         let isTheme3 = false;
+
+        // NEW MAIL VARIABLES
+        let myFakeMailsList = [];
+        let tempInboxMails = {};
+        let isTempInboxListening = false;
+        let selectedMailFilterId = null;
+
         function toggleTheme3() {
             isTheme3 = !isTheme3;
             if(isTheme3) {
@@ -946,7 +894,7 @@
             if(screenId === 'screen-chat' && currentUser) { filterUsers(); }
             if(screenId === 'screen-shop' && currentUser) { renderShopItems(); }
             if(screenId === 'screen-notifications') { renderNotifications(); markNotificationsRead(); }
-            if(screenId === 'screen-mail' && currentUser) { document.getElementById('mail-profile-icon').src = getAvatarUrl(currentUser); }
+            if(screenId === 'screen-mail' && currentUser) { document.getElementById('mail-profile-icon').src = getAvatarUrl(currentUser); renderTempInboxView(); }
         }
 
         function openHomeTab() { document.getElementById('nav-home').classList.add('active'); document.getElementById('nav-shop').classList.remove('active'); document.getElementById('nav-notify').classList.remove('active'); document.getElementById('nav-mail').classList.remove('active'); switchScreen('screen-chat'); if(currentUser) filterUsers(); }
@@ -958,7 +906,6 @@
             document.getElementById('nav-shop').classList.remove('active'); 
             document.getElementById('nav-notify').classList.remove('active'); 
             switchScreen('screen-mail'); 
-            showUnderDevPopup();
         }
 
         function hideAllAuthViews() { document.getElementById('auth-main-view').style.display = 'none'; document.getElementById('auth-login-view').style.display = 'none'; document.getElementById('auth-signup-view').style.display = 'none'; document.getElementById('auth-ticket-create-view').style.display = 'none'; document.getElementById('auth-ticket-success-view').style.display = 'none'; document.getElementById('auth-ticket-status-view').style.display = 'none'; }
@@ -1153,7 +1100,6 @@
             }
         }
 
-        // --- NOTIFICATIONS SYSTEM ---
         function loadUserNotifications() {
             if(!currentUser) return;
             db.ref('notifications/' + currentUser.mobile).on('value', snap => {
@@ -1203,6 +1149,196 @@
             }
         }
 
+        // NEW MAIL FUNCTIONS START
+        function loadUserFakeMails() {  
+            db.ref('users/' + currentUser.mobile + '/fakeMails').on('value', snap => {  
+                const data = snap.val() || {};  
+                myFakeMailsList = Object.values(data);  
+                const countBadge = document.getElementById('my-fake-ids-count');  
+                if(countBadge) countBadge.innerText = myFakeMailsList.length;  
+                renderTempInboxView();
+            });  
+        }  
+
+        function cleanupOldMails() {
+            const now = Date.now();
+            const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+            let updates = {};
+            let hasDeletions = false;
+            Object.keys(tempInboxMails).forEach(k => {
+                const mail = tempInboxMails[k];
+                if (mail.time && (now - mail.time > TWENTY_FOUR_HOURS)) {
+                    updates[k] = null;
+                    hasDeletions = true;
+                }
+            });
+            if (hasDeletions) db.ref('temp_inbox').update(updates);
+        }
+
+        function loadTempInboxMails() {  
+            if(!isTempInboxListening) {  
+                db.ref('temp_inbox').on('value', snap => {  
+                    tempInboxMails = snap.val() || {};  
+                    cleanupOldMails();
+                    renderTempInboxView();
+                });  
+                isTempInboxListening = true;  
+            } else {  
+                renderTempInboxView();  
+            }  
+        }  
+
+        function openCreateBatchMailPopup() {  
+            document.getElementById('create-batch-mail-popup').style.display = 'flex';  
+            document.getElementById('batch-base-name').value = currentUser.name.replace(/\s+/g, '').toLowerCase();  
+            document.getElementById('batch-count').value = '10';  
+            closeAllMenus();
+        }  
+
+        function closeCreateBatchMailPopup() { document.getElementById('create-batch-mail-popup').style.display = 'none'; }  
+
+        function generateBatchFakeMails() {  
+            let baseName = document.getElementById('batch-base-name').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');  
+            let count = parseInt(document.getElementById('batch-count').value.trim());  
+
+            if(!baseName) return showToast("Sirf English letters aur numbers valid hain!");  
+            if(isNaN(count) || count <= 0 || count > 100) return showToast("Aap 1 se 100 tak IDs bana sakte hain.");  
+
+            let newMailsObj = {};  
+            for(let i = 1; i <= count; i++) {  
+                let mailAddress = `${baseName}${i}@im2.in`;  
+                let safeKey = mailAddress.replace(/\./g, '_dot_');  
+                newMailsObj[safeKey] = mailAddress;  
+            }  
+
+            db.ref('users/' + currentUser.mobile + '/fakeMails').update(newMailsObj).then(() => {  
+                showToast(`Superb! ${count} sequential IDs ban gayi hain ✨`);  
+                closeCreateBatchMailPopup();  
+                openMyFakeIdsPopup();  
+            }).catch(() => showToast("Network error aaya!"));  
+        }  
+
+        function openMyFakeIdsPopup() {  
+            document.getElementById('my-fake-ids-popup').style.display = 'flex';  
+            renderMyFakeIdsList();  
+        }  
+
+        function closeMyFakeIdsPopup() { document.getElementById('my-fake-ids-popup').style.display = 'none'; }  
+
+        function renderMyFakeIdsList() {  
+            const listArea = document.getElementById('my-fake-ids-render-list');  
+            if(myFakeMailsList.length === 0) {  
+                listArea.innerHTML = `<p style="text-align:center; color:#888; margin-top:20px; font-weight:600; font-size:13px;">Aapki profile mein koi custom ID nahi hai.</p>`;  
+                return;  
+            }  
+
+            listArea.innerHTML = myFakeMailsList.map((mailAddress, index) => `  
+                <div class="glass-list-item jelly-anim" style="padding: 12px 15px; background: rgba(0,0,0,0.03); border-radius: 16px; display:flex; align-items:center; justify-content:space-between;">  
+                    <div style="display:flex; align-items:center; gap:10px; overflow:hidden;">  
+                        <span style="font-weight:bold; color:#128C7E; font-size:12px; width:22px;">#${index+1}</span>  
+                        <span style="font-weight:600; color:#111; font-size:14px;">${mailAddress}</span>  
+                    </div>  
+                    <div style="display:flex; gap:6px;">  
+                        <button onclick="filterInboxByMail('${mailAddress}')" style="background:rgba(37,211,102,0.15); color:#16a34a; border:1px solid rgba(22,163,74,0.3); padding:4px 10px; border-radius:10px; font-size:11px; font-weight:bold; cursor:pointer;">Inbox</button>  
+                        <button onclick="copySpecificMail('${mailAddress}')" style="background:rgba(0,0,0,0.05); color:#555; border:none; padding:4px 8px; border-radius:10px; font-size:11px; font-weight:bold; cursor:pointer;">Copy</button>  
+                        <button onclick="deleteSpecificMailId('${mailAddress}')" style="background:none; color:#E50914; border:none; padding:2px 6px; font-size:16px; font-weight:bold; cursor:pointer;">×</button>  
+                    </div>  
+                </div>  
+            `).join('');  
+        }  
+
+        function copySpecificMail(mail) { navigator.clipboard.writeText(mail).then(() => showToast("Mail ID copy ho gayi! 💕")); }  
+
+        function deleteSpecificMailId(mail) {  
+            if(confirm(`Kya aap ${mail} ko delete karna chahte hain?`)) {  
+                let safeKey = mail.replace(/\./g, '_dot_');  
+                db.ref(`users/${currentUser.mobile}/fakeMails/${safeKey}`).remove();  
+            }  
+        }  
+
+        function filterInboxByMail(mailAddress) { selectedMailFilterId = mailAddress; closeMyFakeIdsPopup(); renderTempInboxView(); }  
+        function resetInboxFilter() { selectedMailFilterId = null; renderTempInboxView(); }  
+
+        function renderTempInboxView() {  
+            const container = document.getElementById('temp-mail-list-render');  
+            const headerTitle = document.getElementById('temp-mail-header-title');  
+            const searchInput = document.getElementById('mail-search-input');  
+            let searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';  
+
+            if(headerTitle) {  
+                if(selectedMailFilterId) {  
+                    headerTitle.innerHTML = `Inbox: <span style="color:#128C7E;">${selectedMailFilterId}</span> <span style="color:#E50914; font-size:11px; cursor:pointer; float:right;" onclick="resetInboxFilter()">Clear ✖</span>`;  
+                } else {  
+                    headerTitle.innerHTML = `Unified Inbox`;  
+                }  
+            }  
+
+            let relevantKeys = Object.keys(tempInboxMails).filter(key => {  
+                const mail = tempInboxMails[key];  
+                let mailDataString = JSON.stringify(mail).toLowerCase();
+
+                if(selectedMailFilterId) {  
+                    if(!mailDataString.includes(selectedMailFilterId.toLowerCase())) return false;  
+                } else {  
+                    let belongsToMe = myFakeMailsList.some(myId => mailDataString.includes(myId.toLowerCase()));  
+                    if(!belongsToMe) return false;  
+                }  
+                if(searchTerm && !mailDataString.includes(searchTerm)) return false;  
+                return true;  
+            });  
+
+            relevantKeys.sort((a,b) => (tempInboxMails[b].time || 0) - (tempInboxMails[a].time || 0));  
+
+            if(myFakeMailsList.length === 0) {  
+                container.innerHTML = `<div style="text-align:center; padding:30px 15px;">  
+                    <div style="font-size:36px; margin-bottom:10px;">📫</div>  
+                    <p style="color:#555; font-weight:600; font-size:14px;">Aapke pas koi active ID nahi hai.</p>  
+                    <button class="btn-main jelly-anim" onclick="openCreateBatchMailPopup()">Generate IDs ✨</button>  
+                </div>`;  
+                return;  
+            }  
+
+            if(relevantKeys.length === 0) {  
+                container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px; font-weight:600; font-size:13px;">In addresses par abhi tak koi mail prapt nahi hui hai.</p>`;  
+                return;  
+            }  
+
+            container.innerHTML = relevantKeys.map(k => {  
+                const mail = tempInboxMails[k];  
+                const dateStr = mail.time ? new Date(mail.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : '';  
+                const firstLetter = mail.from ? mail.from.replace(/["']/g, "").charAt(0).toUpperCase() : 'M';  
+                const displayTo = mail.to || "Aapki ID";
+
+                return `  
+                <div class="glass-list-item jelly-anim" onclick="viewFakeEmailDetail('${k}')" style="padding:14px; background:rgba(255,255,255,0.8); border-radius:18px; border:1px solid rgba(0,0,0,0.05); ${mail.isRead ? '' : 'background: #f0fdf4; border-left: 4px solid #25D366;'} margin-bottom:12px; display:flex; gap:14px; cursor:pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">  
+                    <div style="width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size: 16px; background: linear-gradient(135deg, #25D366, #128C7E); color: white; flex-shrink: 0;">${firstLetter}</div>  
+                    <div style="flex:1; overflow:hidden;">  
+                        <div style="color: #111; font-weight:bold; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${mail.subject || 'No Subject'}</div>  
+                        <div style="font-size:12px; color:#475569; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">From: ${mail.from || 'Unknown'}</div>  
+                        <div style="font-size:11px; color:#128C7E; font-weight:bold; margin-top:2px;">To: ${displayTo}</div>  
+                    </div>  
+                    <div style="text-align:right; font-size:11px; color:#888; flex-shrink: 0;">  
+                        <div>${dateStr}</div>  
+                        ${mail.isRead ? '' : '<div style="width:8px; height:8px; border-radius:50%; background:#25D366; display:inline-block; margin-top:6px;"></div>'}  
+                    </div>  
+                </div>`;  
+            }).join('');  
+        }  
+
+        function viewFakeEmailDetail(key) {  
+            const mail = tempInboxMails[key];  
+            if(!mail) return;  
+            if(!mail.isRead) { db.ref(`temp_inbox/${key}`).update({ isRead: true }); }  
+            document.getElementById('email-detail-subject').innerText = mail.subject || "No Subject";  
+            document.getElementById('email-detail-from').innerText = "From: " + (mail.from || 'Unknown');  
+            document.getElementById('email-detail-to').innerText = "To: " + (mail.to || 'Aapki ID');  
+            document.getElementById('email-detail-body').innerText = mail.body || "No Content available";  
+            document.getElementById('email-detail-modal').style.display = 'flex';  
+        }  
+
+        function closeFakeEmailDetail() { document.getElementById('email-detail-modal').style.display = 'none'; }
+        // NEW MAIL FUNCTIONS END
+
         let publicNotifsLoaded = false;
         function loginComplete(user, pass) {
             currentUser = user; localStorage.setItem('btd_session', JSON.stringify({mobile: user.mobile, pass: pass}));
@@ -1244,6 +1380,10 @@
             loadUserNotifications();
             updateProfileVerificationUI();
             
+            // Mail tab integration triggers on login
+            loadUserFakeMails();
+            loadTempInboxMails();
+            
             if(document.getElementById('mail-profile-icon')) {
                 document.getElementById('mail-profile-icon').src = getAvatarUrl(currentUser);
             }
@@ -1279,16 +1419,13 @@
         }
 
         function openSettingsMenu() { document.getElementById('menu-overlay').style.display = 'block'; document.getElementById('settings-action-menu').classList.add('active'); }
-        function openMailFeatures() { document.getElementById('menu-overlay').style.display = 'block'; document.getElementById('mail-action-menu').classList.add('active'); }
-        function showUnderDevPopup() { closeAllMenus(); document.getElementById('fake-mail-overlay').style.display = 'flex'; }
-        function hideUnderDevPopup() { document.getElementById('fake-mail-overlay').style.display = 'none'; }
         
         function closeAllMenus() { 
             document.getElementById('menu-overlay').style.display = 'none'; 
             document.getElementById('settings-action-menu').classList.remove('active'); 
             document.getElementById('msg-action-menu').classList.remove('active'); 
             document.getElementById('chat-list-action-menu').classList.remove('active');
-            document.getElementById('mail-action-menu').classList.remove('active');
+            if(document.getElementById('mail-action-menu')) document.getElementById('mail-action-menu').classList.remove('active');
         }
 
         function handleChatTouchStart(mobile) {
@@ -1852,7 +1989,6 @@
             }
         }
 
-        /* --- SHOP & ITEM LISTING SYSTEM --- */
         function openItemPlace() {
             tempItems = [];
             if(shopItems) { 
@@ -2020,7 +2156,6 @@
             window.history.back();
         }
 
-        /* ADMIN TOOLS */
         function openAdminPanel() { switchScreen('screen-admin'); document.getElementById('admin-grid').style.display = 'grid'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none'); document.getElementById('admin-title').innerText = "Admin Tools"; }
         function closeAdminPanel() { if (document.getElementById('admin-grid').style.display === 'none') { openAdminPanel(); } else { switchScreen('screen-chat'); } }
         
@@ -2078,7 +2213,6 @@
             });
         }
         
-        // --- ADMIN VERIFICATION RENDERER ---
         function renderAdminVerifications() {
             db.ref('verification_requests').on('value', snap => {
                 let data = snap.val() || {};
