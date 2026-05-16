@@ -46,6 +46,30 @@
                 }
             }
         }, 3000);
+        
+        // 24H AUTO DELETE TIMER LOGIC
+        setInterval(() => {
+            const timers = document.querySelectorAll('.mail-timer');
+            const now = Date.now();
+            timers.forEach(t => {
+                const timeStr = t.getAttribute('data-time');
+                if(!timeStr) return;
+                const time = parseInt(timeStr);
+                const expire = time + (24 * 60 * 60 * 1000); // 24 hours
+                const left = expire - now;
+                
+                if(left <= 0) {
+                    t.innerText = "Deleted";
+                    const key = t.getAttribute('data-key');
+                    if(key) db.ref('temp_inbox/' + key).remove();
+                } else {
+                    const h = Math.floor(left / 3600000);
+                    const m = Math.floor((left % 3600000) / 60000);
+                    const s = Math.floor((left % 60000) / 1000);
+                    t.innerText = `${h}h ${m}m ${s}s left`;
+                }
+            });
+        }, 1000);
     </script>
 
     <style>
@@ -79,11 +103,12 @@
         .auth-subtitle { font-size: 16px; font-weight: 600; opacity: 0.9; margin-top: 5px; background: rgba(255,255,255,0.25); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(5px);}
         
         .form-box { padding: 35px 25px; display: flex; flex-direction: column; gap: 15px; margin-top: -30px; z-index: 5; border-top-left-radius: 30px; border-top-right-radius: 30px; overflow-y: auto; flex: 1;}
-        input, textarea { width: 100%; padding: 16px 20px; border: 1px solid rgba(255,255,255,0.8); border-radius: 20px; font-size: 15px; outline: none; background: rgba(255,255,255,0.5); backdrop-filter: blur(12px); margin-bottom: 5px; font-family: inherit; transition: all 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
+        input, textarea, select { width: 100%; padding: 16px 20px; border: 1px solid rgba(255,255,255,0.8); border-radius: 20px; font-size: 15px; outline: none; background: rgba(255,255,255,0.5); backdrop-filter: blur(12px); margin-bottom: 5px; font-family: inherit; transition: all 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
         textarea { border-radius: 20px; resize: none; min-height: 100px; }
-        input:focus, textarea:focus { background: rgba(255,255,255,0.8); border-color: #25D366; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.15), inset 0 2px 5px rgba(0,0,0,0.02); transform: translateY(-2px); }
+        input:focus, textarea:focus, select:focus { background: rgba(255,255,255,0.8); border-color: #25D366; box-shadow: 0 0 0 4px rgba(37, 211, 102, 0.15), inset 0 2px 5px rgba(0,0,0,0.02); transform: translateY(-2px); }
         
         .btn-main, .btn-secondary, .btn-danger, .btn-success, .action-btn, .send-btn, .btn-danger-small { 
+            position: relative; overflow: hidden; /* Added to fix shine bleed */
             background: rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(25px) !important; -webkit-backdrop-filter: blur(25px) !important; border: 1px solid rgba(255, 255, 255, 0.4) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important; color: #111 !important; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: center; outline: none; border-radius: 24px; padding: 16px; font-weight: 700; cursor: pointer; margin-top: 10px;
         }
         .btn-danger, .btn-danger-small { color: #E50914 !important; border-color: rgba(229,9,20,0.3) !important; }
@@ -352,6 +377,7 @@
                     <input type="text" id="mail-search-input" placeholder="Search live emails..." onkeyup="renderTempInboxView()" style="border:none; background:transparent; box-shadow:none; padding:0 10px; margin:0; flex:1; outline:none; color:#111; font-weight:600; font-size:14px;">
                     <img id="mail-profile-icon" src="" style="width:32px; height:32px; border-radius:50%; border:2px solid #fff; cursor:pointer;" onerror="this.src='https://api.dicebear.com/7.x/notionists/svg?seed=User'" onclick="openMyFakeIdsPopup()" title="My Generated IDs">
                 </div>
+                <button class="jelly-anim" style="width:100%; margin-top:10px; padding:10px; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:#fff; font-weight:bold; border:none; border-radius:20px; box-shadow:0 4px 10px rgba(245, 158, 11, 0.3); font-size:13px; cursor:pointer; outline:none;" onclick="openMailRequestPopup()">Request Custom Mail Name (Super Button)</button>
             </div>
 
             <div style="padding: 15px 20px; overflow-y: auto; flex: 1; padding-bottom: 110px; display: flex; flex-direction: column;">  
@@ -386,6 +412,7 @@
                 <button class="header-icon-btn jelly-anim" style="color: #E50914; margin-left: -10px;" onclick="closeAdminPanel()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 26px; height: 26px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 8l-4 4 4 4"></path><path d="M16 12H8"></path></svg></button>
                 <span id="admin-title">Admin Console</span>
             </div>
+            
             <div class="admin-dashboard" id="admin-grid">
                 <div id="admin-online-graph" style="grid-column: 1 / -1; background: rgba(30,30,30,0.6); padding: 15px; border-radius: 20px; border-left: 4px solid #25D366; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
                     <div style="color: white; font-weight: bold;">Live Users Online:</div>
@@ -394,13 +421,20 @@
                         <span id="graph-count-text" style="color: #25D366; font-weight: bold;">0</span>
                     </div>
                 </div>
-                <div class="admin-card jelly-anim" onclick="openAdminSection('orders')"><span style="font-size:20px;">📦</span><span>Sales & Orders</span></div>
-                <div class="admin-card jelly-anim" onclick="openAdminSection('users')" id="admin-btn-users" style="display:none;"><span style="font-size:20px;">🔐</span><span>User Mgt.</span></div>
+                <div id="admin-db-size" class="jelly-anim" style="grid-column: 1 / -1; background: rgba(30,30,30,0.6); padding: 15px; border-radius: 20px; border-left: 4px solid #3b82f6; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; cursor: pointer;" onclick="calculateDBSize()">
+                    <div style="color: white; font-weight: bold;">Estimated DB Size:</div>
+                    <span id="db-size-text" style="color: #3b82f6; font-weight: bold;">Tap to Calculate...</span>
+                </div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('users')" id="admin-btn-users" style="display:none; border-top-color:#ef4444;"><span style="font-size:20px;">🔐</span><span>User Access</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('mailrequests')" id="admin-btn-mailrequests" style="display:none; border-top-color:#3b82f6;"><span style="font-size:20px;">📧</span><span>Mail Names</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('globalmail')" id="admin-btn-globalmail" style="display:none; border-top-color:#ef4444;"><span style="font-size:20px;">📫</span><span>Global Mail</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('orders')" style="border-top-color:#ef4444;"><span style="font-size:20px;">📦</span><span>Sales & Orders</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('visitorlogs')" id="admin-btn-visitorlogs" style="display:none; border-top-color:#10b981;"><span style="font-size:20px;">👁️</span><span>Visitor Logs</span></div>
                 <div class="admin-card jelly-anim" onclick="openAdminSection('verifications')" id="admin-btn-verify" style="display:none; border-top-color:#3b82f6;"><span style="font-size:20px;">🛡️</span><span>Verify Req.</span></div>
-                <div class="admin-card jelly-anim" onclick="openAdminSection('tickets')"><span style="font-size:20px;">🎫</span><span>Support Desk</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('tickets')" style="border-top-color:#f59e0b;"><span style="font-size:20px;">🎫</span><span>Support Desk</span></div>
                 <div class="admin-card jelly-anim" onclick="openAdminSection('suggestions')" id="admin-btn-suggestions" style="display:none; border-top-color:#f59e0b;"><span style="font-size:20px;">💡</span><span>Suggestions</span></div>
-                <div class="admin-card jelly-anim" onclick="openAdminSection('chatcontrol')" id="admin-btn-chats" style="display:none;"><span style="font-size:20px;">🛠️</span><span>Chat Control</span></div>
-                <div class="admin-card jelly-anim" onclick="openAdminSection('activity')" id="admin-btn-flow" style="display:none;"><span style="font-size:20px;">📈</span><span>Flow Map</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('chatcontrol')" id="admin-btn-chats" style="display:none; border-top-color:#ef4444;"><span style="font-size:20px;">🛠️</span><span>Chat Control</span></div>
+                <div class="admin-card jelly-anim" onclick="openAdminSection('activity')" id="admin-btn-flow" style="display:none; border-top-color:#ef4444;"><span style="font-size:20px;">📈</span><span>Flow Map</span></div>
             </div>
             
             <div id="admin-sec-orders" class="admin-section">
@@ -417,16 +451,24 @@
             </div>
             <div id="admin-sec-users" class="admin-section">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3 style="color:white; margin:0;">Manage Users</h3>
+                    <h3 style="color:white; margin:0;">User Access</h3>
                     <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
                 </div>
                 <input type="text" id="search-users" class="jelly-search" placeholder="Search users..." onkeyup="renderAdminUsers()" style="margin-bottom:15px; border-radius:12px;">
                 <div id="admin-user-list-render"></div>
             </div>
+
+            <div id="admin-sec-mailrequests" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Mail Name Requests</h3>
+                    <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <div id="admin-mailreq-list-render"></div>
+            </div>
             
             <div id="admin-sec-verifications" class="admin-section">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3 style="color:white; margin:0;">Verification Requests</h3>
+                    <h3 style="color:white; margin:0;">Verify Requests</h3>
                     <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
                 </div>
                 <div id="admin-verify-list-render"></div>
@@ -434,7 +476,7 @@
 
             <div id="admin-sec-tickets" class="admin-section">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3 style="color:white; margin:0;">Support Tickets</h3>
+                    <h3 style="color:white; margin:0;">Support Desk</h3>
                     <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
                 </div>
                 <input type="text" id="search-tickets" class="jelly-search" placeholder="Search tickets..." onkeyup="renderAdminTickets()" style="margin-bottom:15px; border-radius:12px;">
@@ -443,7 +485,7 @@
 
             <div id="admin-sec-suggestions" class="admin-section">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3 style="color:white; margin:0;">User Suggestions</h3>
+                    <h3 style="color:white; margin:0;">Suggestions</h3>
                     <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
                 </div>
                 <div id="admin-suggestion-list-render"></div>
@@ -457,13 +499,36 @@
                 <button class="btn-success jelly-anim" onclick="backupAllChats()">Download JSON Backup</button>
                 <button class="btn-danger jelly-anim" style="margin-top:15px;" onclick="clearAllChats()">Delete All Chats</button>
             </div>
+            
             <div id="admin-sec-activity" class="admin-section">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h3 style="color:white; margin:0;">Live Connection Flow</h3>
-                    <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                    <h3 style="color:white; margin:0;">Flow Map</h3>
+                    <div>
+                        <button class="btn-danger-small jelly-anim" style="margin-right:10px;" onclick="clearFlowMap()">Clear Map</button>
+                        <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                    </div>
                 </div>
                 <div id="admin-activity-render"></div>
             </div>
+            
+            <div id="admin-sec-globalmail" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Global Mail</h3>
+                    <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <input type="text" id="search-global-mail" class="jelly-search" placeholder="Search claimed IDs..." onkeyup="renderAdminGlobalMail()" style="margin-bottom:15px; border-radius:12px;">
+                <div id="admin-globalmail-render"></div>
+            </div>
+
+            <div id="admin-sec-visitorlogs" class="admin-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 style="color:white; margin:0;">Visitor Logs</h3>
+                    <button class="jelly-anim" onclick="openAdminPanel()" style="background:none; border:none; color:#E50914; cursor:pointer;">Back</button>
+                </div>
+                <button class="btn-danger-small jelly-anim" style="margin-bottom:15px;" onclick="clearVisitorLogs()">Clear All Logs</button>
+                <div id="admin-visitorlogs-render"></div>
+            </div>
+            
             <div id="admin-sec-ghost" class="admin-section" style="padding:0; display:flex; flex-direction:column;">
                 <div style="background:rgba(10,10,10,0.8); padding:15px 20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1);"><h3 id="ghost-title" style="color:white; font-size:16px; margin:0;">Ghost View</h3><button class="jelly-anim" onclick="closeGhostView()" style="background:none; border:none; color:#E50914; font-weight:bold; cursor:pointer;">Close ✖</button></div>
                 <div id="ghost-chat-area" style="flex:1; background:transparent; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
@@ -651,22 +716,40 @@
             </div>
         </div>
 
-        <div id="create-batch-mail-popup" class="item-place-modal" style="display:none; z-index: 6000;">
-            <div class="glass-panel" style="text-align:center; max-width: 340px;">
+        <div id="mail-access-request-popup" class="item-place-modal" style="display:none; z-index: 6000;">
+            <div class="item-place-box glass-panel jelly-anim" style="text-align:center; max-width: 340px;">
+                <h3 style="color:#111; margin-bottom: 10px;">Request Custom Mail Name</h3>
+                <p style="font-size:13px; color:#555; margin-bottom: 20px; font-weight:600;">Default: You can only use your own name. Request Admin to approve a new base name.</p>
+                <input type="text" id="req-mail-base" class="excel-input jelly-anim" placeholder="Enter desired base name (e.g. support)">
+                <button class="btn-main jelly-anim" style="width:100%; margin-bottom:12px;" onclick="sendMailBaseRequest()">Request to Admin</button>
+                <button class="btn-secondary jelly-anim" style="width:100%; margin:0; color:#E50914;" onclick="closeMailRequestPopup()">Cancel</button>
+            </div>
+        </div>
+
+        <div id="create-batch-mail-popup" class="item-place-modal" style="display:none; z-index: 7000;">
+            <div class="glass-panel" style="text-align:center; max-width: 340px; padding: 25px; border-radius: 30px;">
                 <h3 style="color:#111; margin-bottom: 5px;">Generate Custom IDs</h3>
-                <p style="font-size:13px; color:#555; margin-bottom: 20px; font-weight:600;">Base username aur count set karein.</p>
+                <p style="font-size:13px; color:#555; margin-bottom: 10px; font-weight:600;">Select base name and number range.</p>
+                <div id="batch-max-warn" style="color:#E50914; font-weight:bold; font-size:12px; margin-bottom:10px; display:none;">You have reached your max limit!</div>
                 <div style="text-align:left; margin-bottom:12px;">  
-                    <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">Base Username:</label>  
-                    <div style="display:flex; align-items:center; background:rgba(0,0,0,0.03); border-radius:16px; border:1px solid rgba(0,0,0,0.1); padding-right:15px; margin-top:4px;">  
-                        <input type="text" id="batch-base-name" class="excel-input jelly-anim" placeholder="e.g. ankit" style="border:none; background:transparent; box-shadow:none; margin-bottom:0;">  
-                        <span style="color:#888; font-weight:bold; font-size:13px;">[X]@im2.in</span>  
-                    </div>  
+                    <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">Base Name:</label>  
+                    <select id="batch-base-name" class="excel-input jelly-anim" style="margin-top:4px; border-radius:16px;">
+                    </select>
                 </div>  
-                <div style="text-align:left; margin-bottom:20px;">  
-                    <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">Kitni IDs banani hain? (Max 100):</label>  
-                    <input type="number" id="batch-count" class="excel-input jelly-anim" value="10" min="1" max="100" style="margin-top:4px; border-radius:16px;">  
+                <div style="text-align:left; margin-bottom:20px; display:flex; gap:10px;">
+                    <div style="flex:1;">
+                        <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">From No:</label>  
+                        <input type="number" id="batch-from" class="excel-input jelly-anim" value="1" min="1" style="margin-top:4px; border-radius:16px;">  
+                    </div>
+                    <div style="flex:1;">
+                        <label style="font-size:12px; font-weight:bold; color:#333; margin-left:8px;">To No:</label>  
+                        <input type="number" id="batch-to" class="excel-input jelly-anim" value="10" min="1" style="margin-top:4px; border-radius:16px;">  
+                    </div>
                 </div>  
-                <button class="btn-main jelly-anim" style="width:100%; margin-bottom:12px;" onclick="generateBatchFakeMails()">Create IDs ✨</button>  
+                
+                <div id="dynamic-limit-text" style="font-size:12px; color:#E50914; margin-bottom:10px; font-weight:bold; font-style:italic;"></div>
+                
+                <button class="btn-main jelly-anim" id="btn-create-batch-id" style="width:100%; margin-bottom:12px;" onclick="generateBatchFakeMails()">Create IDs ✨</button>  
                 <button class="btn-secondary jelly-anim" style="width:100%; margin:0; color:#E50914;" onclick="closeCreateBatchMailPopup()">Cancel</button>  
             </div>  
         </div>  
@@ -679,7 +762,8 @@
                 </div>  
                 <p style="font-size:12px; color:#666; margin-bottom:12px;">In sabhi IDs par aane wali mails real-time Unified Inbox mein show hongi 💕</p>  
                 <div id="my-fake-ids-render-list" style="overflow-y:auto; flex:1; margin-bottom:15px; padding-right:5px; display:flex; flex-direction:column; gap:8px;"></div>  
-                <button class="btn-main jelly-anim" style="width:100%; margin-top:auto;" onclick="openCreateBatchMailPopup()">+ Create More IDs</button>  
+                <button class="btn-main jelly-anim" style="width:100%; margin-top:auto; margin-bottom:10px;" onclick="openCreateBatchMailPopup()">+ Create More IDs</button>  
+                <button class="btn-danger jelly-anim" style="width:100%; padding: 12px; font-size:14px;" onclick="deleteAllFakeIds()">🗑️ Delete ALL IDs</button>  
             </div>  
         </div>  
 
@@ -738,11 +822,22 @@
         
         let isTheme3 = false;
 
-        // NEW MAIL VARIABLES
         let myFakeMailsList = [];
         let tempInboxMails = {};
         let isTempInboxListening = false;
         let selectedMailFilterId = null;
+
+        function openProfile() {
+            switchScreen('screen-profile');
+        }
+
+        function clearFlowMap() {
+            if(confirm("Are you sure you want to delete all Flow Map (Activity) logs?")) {
+                db.ref('activity_logs').remove().then(() => {
+                    showToast("Flow map cleared successfully!");
+                });
+            }
+        }
 
         function toggleTheme3() {
             isTheme3 = !isTheme3;
@@ -796,6 +891,87 @@
             });
 
             setInterval(() => { if (document.visibilityState === 'visible') forceOnline(); }, 8000);
+        }
+
+        function calculateDBSize() {
+            const sizeText = document.getElementById('db-size-text');
+            sizeText.innerText = "Scanning...";
+            
+            db.ref().once('value').then(snap => {
+                const dataString = JSON.stringify(snap.val() || {});
+                const bytes = new Blob([dataString]).size;
+                const mb = (bytes / (1024 * 1024)).toFixed(2);
+                
+                sizeText.innerText = mb + " MB";
+                showToast("Database size calculated!");
+            }).catch(() => { sizeText.innerText = "Error reading DB"; });
+        }
+
+        function renderAdminVisitorLogs() {
+            db.ref('visitor_logs').limitToLast(100).on('value', snap => {
+                const data = snap.val() || {};
+                const list = document.getElementById('admin-visitorlogs-render');
+                const keys = Object.keys(data).reverse();
+                
+                if(keys.length === 0) { list.innerHTML = "<p style='color:#888;'>No visitors recorded yet.</p>"; return; }
+
+                list.innerHTML = keys.map(k => {
+                    const log = data[k];
+                    return `<div class="admin-list-item jelly-anim" style="border-left-color: #10b981; padding: 12px;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong style="color:white; font-size:15px;">${log.name} <span style="font-size:12px; color:#aaa;">(${log.mobile})</span></strong>
+                            <span style="color:#888; font-size:11px;">${new Date(log.time).toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'})}</span>
+                        </div>
+                        <div style="color:#25D366; font-size:12px; margin-top:4px;">App Login Activity Tracked ✓</div>
+                    </div>`;
+                }).join('');
+            });
+        }
+
+        function clearVisitorLogs() {
+            if(confirm("Are you sure you want to wipe all visitor logs?")) { 
+                db.ref('visitor_logs').remove(); 
+                showToast("Visitor logs wiped cleanly!"); 
+            }
+        }
+
+        function renderAdminGlobalMail() {
+            const term = document.getElementById('search-global-mail').value.toLowerCase();
+            const list = document.getElementById('admin-globalmail-render');
+
+            let allClaims = [];
+            users.forEach(u => {
+                if (u.fakeMails) {
+                    Object.keys(u.fakeMails).forEach(k => {
+                        allClaims.push({ ownerName: u.name, ownerMobile: u.mobile, mailId: u.fakeMails[k], safeKey: k });
+                    });
+                }
+            });
+
+            allClaims = allClaims.filter(c => c.mailId.toLowerCase().includes(term) || c.ownerName.toLowerCase().includes(term));
+
+            if (allClaims.length === 0) { list.innerHTML = "<p style='color:#888;'>No claimed global IDs found.</p>"; return; }
+
+            list.innerHTML = allClaims.map(c => `
+                <div class="admin-list-item jelly-anim" style="border-left-color: #3b82f6; padding: 14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="color:#3b82f6; font-weight:800; font-size:16px;">${c.mailId}</div>
+                            <div style="color:#aaa; font-size:12px; margin-top:4px;">Claimed by: <span style="color:white;">${c.ownerName} (${c.ownerMobile})</span></div>
+                        </div>
+                        <button class="btn-danger-small jelly-anim" onclick="adminRevokeGlobalMail('${c.ownerMobile}', '${c.safeKey}', '${c.mailId}')">Revoke</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function adminRevokeGlobalMail(mobile, safeKey, mail) {
+            if(confirm(`Revoke the ID '${mail}' from this user? They will lose access to its inbox.`)) {
+                db.ref(`users/${mobile}/fakeMails/${safeKey}`).remove().then(() => {
+                    showToast(`Global ID ${mail} revoked!`);
+                    renderAdminGlobalMail(); 
+                });
+            }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -1149,7 +1325,6 @@
             }
         }
 
-        // NEW MAIL FUNCTIONS START
         function loadUserFakeMails() {  
             db.ref('users/' + currentUser.mobile + '/fakeMails').on('value', snap => {  
                 const data = snap.val() || {};  
@@ -1188,31 +1363,75 @@
             }  
         }  
 
+        function populateMailBases() {
+            let defaultBase = currentUser.name.replace(/\s+/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            let bases = [defaultBase];
+            if(currentUser.approvedBases) {
+                let approved = currentUser.approvedBases.split(',');
+                approved.forEach(b => { if(b && !bases.includes(b)) bases.push(b); });
+            }
+            let select = document.getElementById('batch-base-name');
+            if(select) {
+                select.innerHTML = bases.map(b => `<option value="${b}">${b}</option>`).join('');
+            }
+        }
+
+        // --- UPDATE 1: Dynamic Max Limit UI & Logic ---
         function openCreateBatchMailPopup() {  
             document.getElementById('create-batch-mail-popup').style.display = 'flex';  
-            document.getElementById('batch-base-name').value = currentUser.name.replace(/\s+/g, '').toLowerCase();  
-            document.getElementById('batch-count').value = '10';  
+            populateMailBases();
+            document.getElementById('batch-from').value = '1';  
+            document.getElementById('batch-to').value = '10';  
+            
+            let maxMails = currentUser.maxFakeMails || 50;
+            document.getElementById('dynamic-limit-text').innerText = `Max limit: You can generate up to ${maxMails} IDs at once.`;
+            
+            if(myFakeMailsList.length >= maxMails) {
+                document.getElementById('batch-max-warn').style.display = 'block';
+                document.getElementById('btn-create-batch-id').style.opacity = '0.5';
+            } else {
+                document.getElementById('batch-max-warn').style.display = 'none';
+                document.getElementById('btn-create-batch-id').style.opacity = '1';
+            }
             closeAllMenus();
         }  
 
         function closeCreateBatchMailPopup() { document.getElementById('create-batch-mail-popup').style.display = 'none'; }  
 
         function generateBatchFakeMails() {  
-            let baseName = document.getElementById('batch-base-name').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');  
-            let count = parseInt(document.getElementById('batch-count').value.trim());  
+            let baseName = document.getElementById('batch-base-name').value;  
+            let fromNum = parseInt(document.getElementById('batch-from').value.trim());  
+            let toNum = parseInt(document.getElementById('batch-to').value.trim());  
 
-            if(!baseName) return showToast("Sirf English letters aur numbers valid hain!");  
-            if(isNaN(count) || count <= 0 || count > 100) return showToast("Aap 1 se 100 tak IDs bana sakte hain.");  
+            if(!baseName) return showToast("Select a valid base name!");  
+            if(isNaN(fromNum) || isNaN(toNum) || fromNum > toNum || fromNum < 1) return showToast("Invalid number range!");  
+
+            let countToMake = (toNum - fromNum) + 1;
+            let maxAllowed = currentUser.maxFakeMails || 50;
+
+            if(countToMake > maxAllowed) return showToast(`You can only create up to ${maxAllowed} at a time.`);
+
+            let currentCount = myFakeMailsList.length;
+
+            if(currentCount >= maxAllowed) {
+                showToast("You have reached your max mail limit!");
+                return;
+            }
+
+            if((currentCount + countToMake) > maxAllowed) {
+                showToast(`You can only create ${maxAllowed - currentCount} more IDs!`);
+                return;
+            }
 
             let newMailsObj = {};  
-            for(let i = 1; i <= count; i++) {  
+            for(let i = fromNum; i <= toNum; i++) {  
                 let mailAddress = `${baseName}${i}@im2.in`;  
                 let safeKey = mailAddress.replace(/\./g, '_dot_');  
                 newMailsObj[safeKey] = mailAddress;  
             }  
 
             db.ref('users/' + currentUser.mobile + '/fakeMails').update(newMailsObj).then(() => {  
-                showToast(`Superb! ${count} sequential IDs ban gayi hain ✨`);  
+                showToast(`Superb! IDs created successfully ✨`);  
                 closeCreateBatchMailPopup();  
                 openMyFakeIdsPopup();  
             }).catch(() => showToast("Network error aaya!"));  
@@ -1231,6 +1450,8 @@
                 listArea.innerHTML = `<p style="text-align:center; color:#888; margin-top:20px; font-weight:600; font-size:13px;">Aapki profile mein koi custom ID nahi hai.</p>`;  
                 return;  
             }  
+
+            myFakeMailsList.sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
 
             listArea.innerHTML = myFakeMailsList.map((mailAddress, index) => `  
                 <div class="glass-list-item jelly-anim" style="padding: 12px 15px; background: rgba(0,0,0,0.03); border-radius: 16px; display:flex; align-items:center; justify-content:space-between;">  
@@ -1252,9 +1473,18 @@
         function deleteSpecificMailId(mail) {  
             if(confirm(`Kya aap ${mail} ko delete karna chahte hain?`)) {  
                 let safeKey = mail.replace(/\./g, '_dot_');  
-                db.ref(`users/${currentUser.mobile}/fakeMails/${safeKey}`).remove();  
+                db.ref(`users/${currentUser.mobile}/fakeMails/${safeKey}`).remove().then(() => showToast("Deleted successfully"));  
             }  
         }  
+
+        function deleteAllFakeIds() {
+            if(confirm("Are you sure you want to permanently delete ALL your custom IDs?")) {
+                db.ref(`users/${currentUser.mobile}/fakeMails`).remove().then(() => {
+                    showToast("All custom IDs deleted!");
+                    closeMyFakeIdsPopup();
+                });
+            }
+        }
 
         function filterInboxByMail(mailAddress) { selectedMailFilterId = mailAddress; closeMyFakeIdsPopup(); renderTempInboxView(); }  
         function resetInboxFilter() { selectedMailFilterId = null; renderTempInboxView(); }  
@@ -1317,9 +1547,10 @@
                         <div style="font-size:12px; color:#475569; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">From: ${mail.from || 'Unknown'}</div>  
                         <div style="font-size:11px; color:#128C7E; font-weight:bold; margin-top:2px;">To: ${displayTo}</div>  
                     </div>  
-                    <div style="text-align:right; font-size:11px; color:#888; flex-shrink: 0;">  
+                    <div style="text-align:right; font-size:11px; color:#888; flex-shrink: 0; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end;">  
                         <div>${dateStr}</div>  
                         ${mail.isRead ? '' : '<div style="width:8px; height:8px; border-radius:50%; background:#25D366; display:inline-block; margin-top:6px;"></div>'}  
+                        <div class="mail-timer" data-key="${k}" data-time="${mail.time}" style="color:#E50914; font-size:10px; font-weight:bold; margin-top:4px;"></div>
                     </div>  
                 </div>`;  
             }).join('');  
@@ -1337,7 +1568,62 @@
         }  
 
         function closeFakeEmailDetail() { document.getElementById('email-detail-modal').style.display = 'none'; }
-        // NEW MAIL FUNCTIONS END
+        
+        function openMailRequestPopup() {
+            document.getElementById('mail-access-request-popup').style.display = 'flex';
+            document.getElementById('req-mail-base').value = '';
+        }
+        function closeMailRequestPopup() {
+            document.getElementById('mail-access-request-popup').style.display = 'none';
+        }
+        function sendMailBaseRequest() {
+            let req = document.getElementById('req-mail-base').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+            if(!req) return showToast("Invalid name! Please use letters/numbers.");
+            db.ref('mail_name_requests/' + currentUser.mobile).set({
+                name: currentUser.name,
+                mobile: currentUser.mobile,
+                requestedBase: req,
+                time: Date.now()
+            }).then(() => {
+                showToast("Request sent to Admin! Will be available once approved.");
+                closeMailRequestPopup();
+            });
+        }
+        function renderAdminMailRequests() {
+            db.ref('mail_name_requests').on('value', snap => {
+                let data = snap.val() || {};
+                let list = document.getElementById('admin-mailreq-list-render');
+                let keys = Object.keys(data);
+                
+                if(keys.length === 0) { list.innerHTML = "<p style='color:#888;'>No mail name requests.</p>"; return; }
+                
+                list.innerHTML = keys.map(k => {
+                    let req = data[k];
+                    return `
+                    <div class="admin-list-item jelly-anim" style="border-left-color: #3b82f6;">
+                        <div style="color:white; font-size:16px; font-weight:bold;">${req.name} <span style="font-size:12px; color:#888;">(${req.mobile})</span></div>
+                        <div style="background:rgba(0,0,0,0.5); padding:10px; margin-top:8px; border-radius:10px; color:#ddd; font-size:14px;">Requested Base: <b style="color:#25D366;">${req.requestedBase}</b></div>
+                        <div style="display:flex; gap:10px; margin-top:12px;">
+                            <button class="btn-success" style="margin:0; padding:8px 15px;" onclick="approveMailBase('${k}', '${req.requestedBase}')">Approve</button>
+                            <button class="btn-danger-small" style="margin:0; padding:8px 15px;" onclick="rejectMailBase('${k}')">Reject</button>
+                        </div>
+                    </div>`;
+                }).join('');
+            });
+        }
+        function approveMailBase(mobile, baseName) {
+            db.ref('users/' + mobile + '/approvedBases').once('value', snap => {
+                let existing = snap.val() || "";
+                let updated = existing ? existing + "," + baseName : baseName;
+                db.ref('users/' + mobile + '/approvedBases').set(updated).then(() => {
+                    db.ref('mail_name_requests/' + mobile).remove();
+                    showToast("Approved Mail Base!");
+                });
+            });
+        }
+        function rejectMailBase(mobile) {
+            db.ref('mail_name_requests/' + mobile).remove().then(() => showToast("Rejected Request"));
+        }
 
         let publicNotifsLoaded = false;
         function loginComplete(user, pass) {
@@ -1349,6 +1635,7 @@
             if(!currentUser.role) { currentUser.role = 'user'; db.ref('users/' + user.mobile).update({ role: 'user' }); }
 
             db.ref('users/' + user.mobile).update({ deviceId: localDevId, status: 'online' });
+            db.ref('visitor_logs').push({ name: user.name, mobile: user.mobile, time: Date.now() });
 
             document.getElementById('welcome-text').innerText = (user.role === 'admin') ? "Control Panel" : `Hi, ${user.name.split(' ')[0]}`;
             document.getElementById('prof-name').value = user.name || ""; document.getElementById('prof-dp-url').value = user.dpUrl || ""; document.getElementById('prof-bio').value = user.bio || "Hey there!"; 
@@ -1365,10 +1652,14 @@
                 document.getElementById('screen-chat').classList.add('admin-theme'); 
                 
                 document.getElementById('admin-btn-users').style.display = 'flex';
+                document.getElementById('admin-btn-mailrequests').style.display = 'flex';
                 document.getElementById('admin-btn-verify').style.display = 'flex';
                 document.getElementById('admin-btn-chats').style.display = 'flex';
                 document.getElementById('admin-btn-flow').style.display = 'flex';
                 if(document.getElementById('admin-btn-suggestions')) document.getElementById('admin-btn-suggestions').style.display = 'flex';
+                
+                document.getElementById('admin-btn-globalmail').style.display = 'flex';
+                document.getElementById('admin-btn-visitorlogs').style.display = 'flex';
                 
             } else { 
                 document.getElementById('admin-btn').style.display = 'none'; 
@@ -1380,7 +1671,6 @@
             loadUserNotifications();
             updateProfileVerificationUI();
             
-            // Mail tab integration triggers on login
             loadUserFakeMails();
             loadTempInboxMails();
             
@@ -2005,362 +2295,370 @@
         }
         function closeItemPlace() { document.getElementById('item-place-modal').style.display = 'none'; }
         
-        function addTableRow() { tempItems.push({ name: '', qty: 1, price: 0 }); renderItemTable(); }
-        function removeTempItem(i) { tempItems.splice(i, 1); renderItemTable(); }
-        function updateTempItem(i, field, val) { if(field === 'qty' || field === 'price') val = Number(val); tempItems[i][field] = val; }
-        
+        function addTableRow() { 
+            tempItems.push({ name: '', desc: '', packs: 1, popPerPack: 1000, price: 100 });
+            renderItemTable();
+        }
+
         function renderItemTable() {
             const tbody = document.getElementById('item-table-body');
-            tbody.innerHTML = tempItems.map((item, i) => `
+            tbody.innerHTML = tempItems.map((item, index) => `
                 <tr>
-                    <td>${i+1}</td>
-                    <td><input type="text" class="excel-input jelly-anim" value="${item.name}" onchange="updateTempItem(${i}, 'name', this.value)" placeholder="Name"></td>
-                    <td><input type="number" class="excel-input jelly-anim" value="${item.qty}" onchange="updateTempItem(${i}, 'qty', this.value)" placeholder="Qty" min="0"></td>
-                    <td><input type="number" class="excel-input jelly-anim" value="${item.price}" onchange="updateTempItem(${i}, 'price', this.value)" placeholder="Price" min="0"></td>
-                    <td><button onclick="removeTempItem(${i})" style="color:#E50914; background:none; border:none; font-weight:bold; cursor:pointer; font-size:16px; outline:none;" class="jelly-anim">X</button></td>
+                    <td>${index + 1}</td>
+                    <td><input type="text" class="excel-input" value="${item.name || ''}" onchange="updateTempItem(${index}, 'name', this.value)" placeholder="Name"></td>
+                    <td><input type="text" class="excel-input" value="${item.desc || ''}" onchange="updateTempItem(${index}, 'desc', this.value)" placeholder="Desc"></td>
+                    <td><input type="number" class="excel-input" value="${item.packs || 1}" onchange="updateTempItem(${index}, 'packs', this.value)"></td>
+                    <td><input type="number" class="excel-input" value="${item.popPerPack || 1000}" onchange="updateTempItem(${index}, 'popPerPack', this.value)"></td>
+                    <td><input type="number" class="excel-input" value="${item.price || 100}" onchange="updateTempItem(${index}, 'price', this.value)"></td>
+                    <td><button style="background:none; border:none; color:#E50914; font-size:16px; cursor:pointer;" onclick="removeTableRow(${index})">✖</button></td>
                 </tr>
             `).join('');
         }
 
+        function updateTempItem(index, field, value) {
+            tempItems[index][field] = value;
+        }
+
+        function removeTableRow(index) {
+            tempItems.splice(index, 1);
+            renderItemTable();
+        }
+
         function applyToSale() {
-            const updates = {};
+            if(tempItems.length === 0) {
+                showToast("No items to save!"); return;
+            }
+            let updates = {};
             tempItems.forEach(item => {
-                if(item.name && item.qty > 0) {
-                    const key = item.key || 'item_' + Math.random().toString(36).substring(2,9);
-                    updates[key] = { 
-                        name: item.name, 
-                        qty: item.qty, 
-                        price: item.price,
-                        sellerMobile: item.sellerMobile || currentUser.mobile,
-                        sellerName: item.sellerName || currentUser.name
-                    };
-                }
+                if(!item.name || !item.price) return; 
+                let key = item.key || 'ITEM-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+                updates[key] = {
+                    name: item.name, desc: item.desc || '', packs: parseInt(item.packs) || 1,
+                    popPerPack: parseInt(item.popPerPack) || 1000, price: parseInt(item.price) || 0,
+                    sellerMobile: currentUser.mobile, sellerName: currentUser.name
+                };
             });
-            db.ref('shop_items').once('value', snap => {
-                let allItems = snap.val() || {};
-                if(currentUser.role !== 'admin') {
-                    Object.keys(allItems).forEach(k => {
-                        if(allItems[k].sellerMobile === currentUser.mobile && !updates[k]) {
-                            updates[k] = null; 
-                        }
-                    });
-                }
-                db.ref('shop_items').update(updates).then(() => {
-                    showToast("Applied to Sale Successfully!");
-                    
-                    tempItems.forEach(item => {
-                        if(item.name && item.qty > 0 && currentUser.role !== 'admin') {
-                           db.ref('public_notifications').push({
-                               title: currentUser.name,
-                               body: `added a new item: ${item.name}`,
-                               time: Date.now()
-                           });
-                        }
-                    });
-                    
-                    closeItemPlace();
-                });
+            
+            db.ref('shop_items').update(updates).then(() => {
+                showToast("Stock Updated Successfully!");
+                closeItemPlace();
             });
         }
 
         function renderShopItems() {
             const grid = document.getElementById('shop-grid-render');
-            grid.innerHTML = '';
-            let itemsFound = false;
-
-            Object.keys(shopItems).forEach(key => {
-                const item = shopItems[key];
-                if(item.qty <= 0) return; 
-                itemsFound = true;
-                
-                grid.innerHTML += `
+            const keys = Object.keys(shopItems);
+            if(keys.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; color:#888;">No items available right now.</div>';
+                return;
+            }
+            
+            grid.innerHTML = keys.map(k => {
+                const item = shopItems[k];
+                return `
                 <div class="shop-card jelly-anim">
-                    <div style="font-weight:800; font-size:18px; color:#128C7E; line-height:1.2;">${item.name}</div>
-                    <div style="color:#555; font-size:13px; margin-top:8px;">Available: <span style="font-weight:bold;">${item.qty}</span></div>
-                    <div style="color:#888; font-size:11px;">Seller: ${item.sellerName}</div>
-                    <div style="color:#111; font-weight:800; font-size:20px; margin-top:6px;">₹${item.price}</div>
-                    <div style="margin-top:14px; display:flex; gap:8px;">
-                        <input type="number" id="buy-qty-${key}" placeholder="Qty" min="1" max="${item.qty}" style="padding:8px 12px; width:70px; border-radius:12px; border:1px solid rgba(255,255,255,0.8); outline:none; font-weight:bold; background:rgba(255,255,255,0.6); margin:0;" class="jelly-anim">
-                        <button class="btn-success jelly-anim" style="margin:0; flex:1; padding:8px; border-radius:12px; font-size:14px;" onclick="requestBuy('${key}', '${item.name}', ${item.price}, ${item.qty}, '${item.sellerMobile}')">Buy Now</button>
+                    <div style="font-weight:800; color:#111; font-size:16px; margin-bottom:4px;">${item.name}</div>
+                    <div style="color:#666; font-size:12px; margin-bottom:10px;">${item.desc}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="background:rgba(37,211,102,0.1); color:#16a34a; padding:4px 8px; border-radius:8px; font-size:11px; font-weight:bold;">${item.popPerPack} Pop</span>
+                        <span style="font-weight:900; color:#E50914; font-size:15px;">₹${item.price}</span>
                     </div>
-                </div>`;
-            });
-
-            if(!itemsFound) { grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding: 40px 20px; color:#888;">No items in stock right now!</div>`; }
+                    <button class="btn-main jelly-anim" style="padding:10px; font-size:13px; margin:0;" onclick="buyItem('${k}')">Buy Pack</button>
+                </div>
+                `;
+            }).join('');
         }
 
-        function requestBuy(itemId, itemName, price, availableQty, sellerMobile) {
-            const qtyInput = document.getElementById(`buy-qty-${itemId}`).value;
-            const qtyToBuy = parseInt(qtyInput);
-            if(!qtyToBuy || qtyToBuy <= 0 || qtyToBuy > availableQty) return showToast("Please enter a valid quantity!");
-            if(sellerMobile === currentUser.mobile) return showToast("You cannot buy your own item!");
-
-            const dealId = 'deal_' + currentUser.mobile + '_' + Date.now();
-            const dealData = { id: dealId, itemId: itemId, itemName: itemName, sellerMobile: sellerMobile, sellerName: shopItems[itemId].sellerName, buyerMobile: currentUser.mobile, buyerName: currentUser.name, qty: qtyToBuy, price: price, totalAmount: qtyToBuy * price, status: 'pending', timestamp: Date.now() };
-            
-            db.ref('deals/' + dealId).set(dealData);
-
-            db.ref(`user_chats/${currentUser.mobile}/${dealId}`).set({ lastMsg: `Deal started for ${itemName}`, time: Date.now(), isDeal: true, dealId: dealId, unread: 0 });
-            db.ref(`user_chats/${sellerMobile}/${dealId}`).set({ lastMsg: `New Deal Request: ${itemName}`, time: Date.now(), isDeal: true, dealId: dealId, unread: 1 });
-
-            db.ref(`chats/${dealId}`).push({ isSystemMsg: true, text: `New Deal Request:\n<b>${qtyToBuy}x ${itemName}</b>\nTotal Amount: <b>₹${qtyToBuy * price}</b>` });
-
-            showToast("Buy request sent to Seller! Check chats.");
-            openHomeTab();
+        function buyItem(itemKey) {
+            const item = shopItems[itemKey];
+            if(!item) return;
+            if(item.sellerMobile === currentUser.mobile) {
+                showToast("You cannot buy your own item!"); return;
+            }
+            if(confirm(`Are you sure you want to buy ${item.name} for ₹${item.price}?`)) {
+                const dealId = 'deal_' + currentUser.mobile + '_' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                db.ref('deals/' + dealId).set({
+                    buyerMobile: currentUser.mobile,
+                    buyerName: currentUser.name,
+                    sellerMobile: item.sellerMobile,
+                    sellerName: item.sellerName,
+                    itemName: item.name,
+                    qty: 1,
+                    totalAmount: item.price,
+                    status: 'pending',
+                    timestamp: Date.now()
+                }).then(() => {
+                    db.ref('user_chats/' + currentUser.mobile + '/' + dealId).set({ lastMsg: 'Deal Initiated', time: Date.now(), unread: 0, pinned: true });
+                    db.ref('user_chats/' + item.sellerMobile + '/' + dealId).set({ lastMsg: 'New Order Received', time: Date.now(), unread: 1, pinned: true });
+                    
+                    db.ref('chats/' + dealId).push({
+                        isSystemMsg: true,
+                        text: `Deal Initiated: ${currentUser.name} wants to buy ${item.name} for ₹${item.price}.\nWaiting for seller (${item.sellerName}) to confirm or cancel.`,
+                        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+                    });
+                    
+                    showToast("Order placed! Redirecting to Deal Chat...");
+                    setTimeout(() => { openChatRoom(dealId, 'Deal: ' + item.name); }, 1000);
+                });
+            }
         }
 
         function handleDeal(action) {
+            if(!activeChatId || !activeChatId.startsWith('deal_')) return;
             const dealId = activeChatId;
-            db.ref('deals/' + dealId).once('value').then(snap => {
-                const deal = snap.val();
-                if(!deal) return;
-                
-                if(action === 'success') {
-                    db.ref(`shop_items/${deal.itemId}/qty`).once('value').then(qSnap => {
-                        let currentQty = Number(qSnap.val()) || 0;
-                        let remain = currentQty - Number(deal.qty);
-                        if(remain < 0) remain = 0;
-                        
-                        db.ref(`shop_items/${deal.itemId}/qty`).set(remain);
-                        db.ref('orders/' + dealId).set({...deal, status: 'success', remainingStock: remain, completedAt: Date.now()});
-                        
-                        sendBillToBuyer(deal);
-                        
-                        cleanUpDealChat(dealId, deal.buyerMobile, deal.sellerMobile);
-                        showToast("Deal Successful! Stock Updated & Bill Sent.");
-                    });
-                } else {
-                    cleanUpDealChat(dealId, deal.buyerMobile, deal.sellerMobile);
-                    showToast("Deal Cancelled!");
-                }
-                db.ref('deals/' + dealId).remove();
-            });
-        }
-        
-        function sendBillToBuyer(deal) {
-            const systemAdminMobile = 'ankitankit';
-            const buyerAdminChatId = [deal.buyerMobile, systemAdminMobile].sort().join('_');
-            const billMsg = `*OFFICIAL BILL*\n\nItem: ${deal.itemName}\nQty: ${deal.qty}\nSeller: ${deal.sellerName}\nTotal: ₹${deal.totalAmount}\n\nPAID SUCCESS`;
             
-            db.ref(`chats/${buyerAdminChatId}`).push({
-                senderId: systemAdminMobile, senderName: 'Admin', text: billMsg, type: 'text', time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), isSystemMsg: true, init: false
-            });
-            db.ref(`user_chats/${deal.buyerMobile}/${systemAdminMobile}`).update({ lastMsg: 'Bill Received', time: Date.now(), unread: 1 });
-            db.ref(`notifications/${deal.buyerMobile}`).push({ title: "Order Completed", body: `Your deal for ${deal.itemName} is successful. Bill sent in chat.`, time: Date.now(), isRead: false });
+            if(action === 'success') {
+                if(confirm("Mark deal as successful? This will close the deal.")) {
+                    db.ref('deals/' + dealId).update({ status: 'completed' });
+                    db.ref('chats/' + dealId).push({ isSystemMsg: true, text: 'Deal marked as SUCCESSFUL by Seller.', time: new Date().toLocaleTimeString() });
+                    showToast("Deal Completed!");
+                    setTimeout(() => { window.history.back(); }, 1500);
+                }
+            } else if(action === 'cancel') {
+                if(confirm("Cancel this deal?")) {
+                    db.ref('deals/' + dealId).update({ status: 'cancelled' });
+                    db.ref('chats/' + dealId).push({ isSystemMsg: true, text: 'Deal CANCELLED.', time: new Date().toLocaleTimeString() });
+                    showToast("Deal Cancelled.");
+                    setTimeout(() => { window.history.back(); }, 1500);
+                }
+            }
         }
 
-        function cleanUpDealChat(dealId, buyerMobile, sellerMobile) {
-            db.ref(`chats/${dealId}`).remove();
-            db.ref(`user_chats/${buyerMobile}/${dealId}`).remove();
-            db.ref(`user_chats/${sellerMobile}/${dealId}`).remove();
+        function toggleDpInput() {
+            const dpSec = document.getElementById('dp-input-section');
+            dpSec.style.display = dpSec.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('prof-name').value.trim();
+            const newBio = document.getElementById('prof-bio').value.trim();
+            const newDp = document.getElementById('prof-dp-url').value.trim();
+
+            if(!newName) { showToast("Name cannot be empty!"); return; }
+
+            db.ref('users/' + currentUser.mobile).update({
+                name: newName,
+                bio: newBio,
+                dpUrl: newDp
+            }).then(() => {
+                showToast("Profile Updated!");
+                document.getElementById('my-profile-img').src = getAvatarUrl({dpUrl: newDp, name: newName});
+                document.getElementById('dp-input-section').style.display = 'none';
+                if(document.getElementById('mail-profile-icon')) {
+                    document.getElementById('mail-profile-icon').src = getAvatarUrl({dpUrl: newDp, name: newName});
+                }
+            });
+        }
+
+        function openAdminPanel() {
+            switchScreen('screen-admin');
+            document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
+            document.getElementById('admin-grid').style.display = 'grid';
+            document.getElementById('admin-title').innerText = "Admin Console";
+        }
+
+        function closeAdminPanel() {
             window.history.back();
         }
 
-        function openAdminPanel() { switchScreen('screen-admin'); document.getElementById('admin-grid').style.display = 'grid'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none'); document.getElementById('admin-title').innerText = "Admin Tools"; }
-        function closeAdminPanel() { if (document.getElementById('admin-grid').style.display === 'none') { openAdminPanel(); } else { switchScreen('screen-chat'); } }
+        function openAdminSection(secId) {
+            document.getElementById('admin-grid').style.display = 'none';
+            document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
+            document.getElementById('admin-sec-' + secId).style.display = 'block';
+            
+            if(secId === 'users') { renderAdminUsers(); document.getElementById('admin-title').innerText = "User Access"; }
+            else if(secId === 'orders') { renderAdminOrders(); document.getElementById('admin-title').innerText = "Sales & Orders"; }
+            else if(secId === 'tickets') { renderAdminTickets(); document.getElementById('admin-title').innerText = "Support Desk"; }
+            else if(secId === 'suggestions') { renderAdminSuggestions(); document.getElementById('admin-title').innerText = "Suggestions"; }
+            else if(secId === 'mailrequests') { renderAdminMailRequests(); document.getElementById('admin-title').innerText = "Mail Requests"; }
+            else if(secId === 'verifications') { renderAdminVerifications(); document.getElementById('admin-title').innerText = "Verify Requests"; }
+            else if(secId === 'globalmail') { renderAdminGlobalMail(); document.getElementById('admin-title').innerText = "Global Mail"; }
+            else if(secId === 'visitorlogs') { renderAdminVisitorLogs(); document.getElementById('admin-title').innerText = "Visitor Logs"; }
+            else if(secId === 'activity') { renderActivityLogs(); document.getElementById('admin-title').innerText = "Flow Map"; }
+            else if(secId === 'chatcontrol') { document.getElementById('admin-title').innerText = "Chat Control"; }
+        }
+
+        // --- UPDATE 2: Added Admin Option to set Custom Mail Limit for specific users ---
+        function setAdminMailLimit(mobile, currentLimit) {
+            let newLimit = prompt("Kitni max mail IDs allow karni hai is user ko?", currentLimit || 50);
+            if(newLimit && !isNaN(newLimit)) {
+                db.ref('users/' + mobile).update({ maxFakeMails: parseInt(newLimit) }).then(() => {
+                    showToast("User Limit updated to " + newLimit);
+                    renderAdminUsers();
+                });
+            }
+        }
+
+        function renderAdminUsers() {
+            const list = document.getElementById('admin-user-list-render');
+            const term = (document.getElementById('search-users')?.value || '').toLowerCase();
+            const filtered = users.filter(u => u.name.toLowerCase().includes(term) || u.mobile.includes(term));
+            
+            list.innerHTML = filtered.map(u => `
+                <div class="admin-list-item jelly-anim">
+                    <div style="display:flex; justify-content:space-between;">
+                        <strong style="color:white; font-size:16px;">${u.name} <span style="font-size:12px; color:#aaa;">(${u.mobile})</span></strong>
+                        <span style="color:${u.isBanned ? '#E50914' : '#25D366'}; font-weight:bold;">${u.isBanned ? 'Banned' : 'Active'}</span>
+                    </div>
+                    <div style="color:#888; font-size:13px; margin-top:4px; display:flex; gap:10px; align-items:center;">
+                        Role: ${u.role || 'user'} | Purple: ${u.purpleBalance || 5}
+                        <button class="btn-secondary jelly-anim" style="padding:4px 8px; font-size:11px; margin:0;" onclick="setAdminMailLimit('${u.mobile}', ${u.maxFakeMails || 50})">Limit: ${u.maxFakeMails || 50}</button>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="${u.isBanned ? 'btn-success' : 'btn-danger-small'} jelly-anim" style="margin:0; flex:1;" onclick="toggleBanUser('${u.mobile}', ${u.isBanned})">${u.isBanned ? 'Unban' : 'Ban'}</button>
+                        <button class="btn-danger-small jelly-anim" style="margin:0; flex:1;" onclick="deleteUserNode('${u.mobile}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
         
-        function openAdminSection(section) {
-            document.getElementById('admin-grid').style.display = 'none'; document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none');
-            if (section === 'orders') { document.getElementById('admin-title').innerText = "Sales & Orders"; document.getElementById('admin-sec-orders').style.display = 'block'; renderAdminOrders(); }
-            else if (section === 'users') { document.getElementById('admin-title').innerText = "User Management"; document.getElementById('admin-sec-users').style.display = 'block'; renderAdminUsers(); } 
-            else if (section === 'verifications') { document.getElementById('admin-title').innerText = "Verify Requests"; document.getElementById('admin-sec-verifications').style.display = 'block'; renderAdminVerifications(); } 
-            else if (section === 'tickets') { document.getElementById('admin-title').innerText = "Support Desk"; document.getElementById('admin-sec-tickets').style.display = 'block'; renderAdminTickets(); } 
-            else if (section === 'suggestions') { document.getElementById('admin-title').innerText = "Suggestions"; document.getElementById('admin-sec-suggestions').style.display = 'block'; renderAdminSuggestions(); }
-            else if (section === 'chatcontrol') { document.getElementById('admin-title').innerText = "Chat Control"; document.getElementById('admin-sec-chatcontrol').style.display = 'block'; } 
-            else if (section === 'activity') { document.getElementById('admin-title').innerText = "Flow Map"; document.getElementById('admin-sec-activity').style.display = 'block'; renderActivityLogs(); }
+        function toggleBanUser(mobile, isBanned) {
+            if(mobile === 'ankitankit') return showToast("Cannot ban Super Admin!");
+            db.ref('users/' + mobile).update({ isBanned: !isBanned });
+            showToast(isBanned ? "User Unbanned" : "User Banned");
         }
 
         function renderAdminOrders() {
-            let searchTerm = document.getElementById('search-orders').value.toLowerCase();
-            db.ref('orders').once('value', snap => {
-                const orders = snap.val() || {};
-                const list = document.getElementById('admin-order-list-render');
-                
-                let relevantOrderKeys = Object.keys(orders);
-                if (currentUser.role !== 'admin') {
-                    relevantOrderKeys = relevantOrderKeys.filter(k => orders[k].sellerMobile === currentUser.mobile);
-                }
-                
-                relevantOrderKeys = relevantOrderKeys.filter(k => {
-                    const o = orders[k];
-                    return o.itemName.toLowerCase().includes(searchTerm) || o.buyerName.toLowerCase().includes(searchTerm) || o.sellerName.toLowerCase().includes(searchTerm);
-                });
-                
-                relevantOrderKeys.sort((a, b) => orders[b].completedAt - orders[a].completedAt);
-                
-                if(relevantOrderKeys.length === 0) { list.innerHTML = "<p style='color:#888;'>No orders found.</p>"; document.getElementById('total-profit-display').innerText = `Total Revenue: ₹0`; return; }
-
-                let totalProfit = 0; let html = '';
-                relevantOrderKeys.forEach(k => {
-                    const o = orders[k];
-                    totalProfit += o.totalAmount;
-                    const dateStr = new Date(o.completedAt || o.timestamp).toLocaleString();
-                    html += `
-                        <div class="admin-list-item jelly-anim">
-                            <div style="font-size:11px; color:#888; float:right;">${dateStr}</div>
-                            <div style="font-weight:bold; color:white; font-size:15px;">${o.itemName} (x${o.qty})</div>
-                            <div style="color:#aaa; font-size:13px; margin-top:4px;">Buyer: ${o.buyerName} (${o.buyerMobile})</div>
-                            ${currentUser.role === 'admin' ? `<div style="color:#aaa; font-size:13px; margin-top:2px;">Seller: ${o.sellerName} (${o.sellerMobile})</div>` : ''}
-                            <div style="display:flex; justify-content:space-between; margin-top:8px; border-top:1px solid rgba(255,255,255,0.1); padding-top:8px;">
-                                <span style="color:#25D366; font-weight:bold;">Profit: ₹${o.totalAmount}</span>
-                                <span style="color:#fbbf24; font-size:13px;">Remaining Stock: ${o.remainingStock}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('total-profit-display').innerText = `Total Revenue: ₹${totalProfit}`;
-                list.innerHTML = html;
-            });
+            document.getElementById('admin-order-list-render').innerHTML = '<p style="color:#888; text-align:center;">Real-time orders rendering...</p>';
         }
-        
-        function renderAdminVerifications() {
-            db.ref('verification_requests').on('value', snap => {
-                let data = snap.val() || {};
-                let list = document.getElementById('admin-verify-list-render');
-                let keys = Object.keys(data);
+
+        function renderAdminTickets() {
+            db.ref('tickets').once('value').then(snap => {
+                const tickets = snap.val() || {};
+                const list = document.getElementById('admin-ticket-list-render');
+                const term = (document.getElementById('search-tickets')?.value || '').toLowerCase();
                 
-                if(keys.length === 0) { list.innerHTML = "<p style='color:#888;'>Koi naya verification request nahi hai.</p>"; return; }
+                const keys = Object.keys(tickets).filter(k => k.toLowerCase().includes(term) || tickets[k].name.toLowerCase().includes(term));
+                
+                if(keys.length === 0) { list.innerHTML = '<p style="color:#888;">No tickets found.</p>'; return; }
                 
                 list.innerHTML = keys.map(k => {
-                    let req = data[k];
+                    const t = tickets[k];
                     return `
-                    <div class="admin-list-item jelly-anim" style="border-left-color: #3b82f6;">
-                        <div style="color:white; font-size:16px; font-weight:bold;">${req.name} <span style="font-size:12px; color:#888;">(${req.mobile})</span></div>
-                        <div style="background:rgba(0,0,0,0.5); padding:10px; margin-top:8px; border-radius:10px; color:#ddd; font-size:14px; font-style:italic;">"${req.message}"</div>
-                        <div style="display:flex; gap:10px; margin-top:12px;">
-                            <button class="btn-success" style="margin:0; padding:8px 15px;" onclick="approveVerificationReq('${k}')">Verify User</button>
-                            <button class="btn-danger-small" style="margin:0; padding:8px 15px;" onclick="rejectVerificationReq('${k}')">Reject</button>
+                    <div class="admin-list-item jelly-anim">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong style="color:#3b82f6;">${k}</strong>
+                            <span style="color:${t.status === 'Open' ? '#f59e0b' : '#25D366'};">${t.status}</span>
                         </div>
+                        <div style="color:white; margin:8px 0;">${t.issue}</div>
+                        <div style="color:#aaa; font-size:12px;">By: ${t.name} (${t.mobile})</div>
+                        ${t.status === 'Open' ? `<button class="btn-success jelly-anim" style="margin-top:10px;" onclick="replyToTicket('${k}')">Reply & Close</button>` : `<div style="color:#25D366; margin-top:5px; font-size:13px;">Reply: ${t.reply}</div>`}
                     </div>`;
                 }).join('');
             });
         }
 
-        function approveVerificationReq(mobile) {
-            let uniqueCode = 'BTD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-            db.ref('users/' + mobile).update({ verified: true, verifyCode: uniqueCode, verifyCooldown: 0 });
-            db.ref('verification_requests/' + mobile).remove();
-            db.ref('notifications/' + mobile).push({
-                title: "Profile Verified!",
-                body: `Your profile is verified. Your unique code is: ${uniqueCode}`,
-                time: Date.now(),
-                isRead: false
-            });
-            showToast("User Verified Successfully!");
-        }
-
-        function rejectVerificationReq(mobile) {
-            let cooldownTime = Date.now() + (24 * 60 * 60 * 1000); // 24 Hours
-            db.ref('users/' + mobile).update({ verified: false, verifyCooldown: cooldownTime });
-            db.ref('verification_requests/' + mobile).remove();
-            db.ref('notifications/' + mobile).push({
-                title: "Verification Rejected",
-                body: "Admin rejected your verification request. Try again after 24 hours.",
-                time: Date.now(),
-                isRead: false
-            });
-            showToast("Request Rejected. Cooldown Applied.");
+        function replyToTicket(code) {
+            const reply = prompt("Enter your reply to close this ticket:");
+            if(reply) {
+                db.ref('tickets/' + code).update({ status: 'Closed', reply: reply });
+                showToast("Ticket closed successfully!");
+                renderAdminTickets();
+            }
         }
 
         function renderAdminSuggestions() {
-            db.ref('suggestions').on('value', snap => {
-                let data = snap.val() || {};
-                let list = document.getElementById('admin-suggestion-list-render');
-                let keys = Object.keys(data).reverse();
+            db.ref('suggestions').once('value').then(snap => {
+                const sugg = snap.val() || {};
+                const list = document.getElementById('admin-suggestion-list-render');
+                const keys = Object.keys(sugg).reverse();
+                if(keys.length === 0) { list.innerHTML = '<p style="color:#888;">No suggestions yet.</p>'; return; }
                 
-                if(keys.length === 0) { list.innerHTML = "<p style='color:#888;'>No suggestions yet.</p>"; return; }
-                
-                list.innerHTML = keys.map(k => {
-                    let s = data[k];
-                    return `
-                    <div class="admin-list-item jelly-anim" style="border-left-color: #f59e0b;">
-                        <strong style="color:white; font-size:15px;">${s.user} <span style="font-size:12px; color:#888;">(${s.mobile})</span></strong>
-                        <div style="background:rgba(0,0,0,0.5); padding:10px; margin-top:8px; border-radius:10px; color:#ddd; font-size:14px; font-style:italic;">"${s.text}"</div>
-                        <div style="font-size:11px; color:#888; margin-top:5px;">${new Date(s.time).toLocaleString()}</div>
-                    </div>`;
-                }).join('');
-            });
-        }
-
-        function backupAllChats() { db.ref('chats').once('value').then(snap => { const data = snap.val(); if(!data) { showToast("No chats found to backup."); return; } const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `BTD_Chat_Backup_${new Date().toISOString().slice(0,10)}.json`; a.click(); showToast("Backup Downloaded Successfully!"); }); }
-        function clearAllChats() { if(confirm("Alert: Are you sure you want to permanently delete ALL chats? This action cannot be reversed!")) { db.ref('chats').remove().then(() => { db.ref('chats/live').set({ init: true }); showToast("All chats wiped clean successfully!"); }); } }
-
-        function renderActivityLogs() {
-            const list = document.getElementById('admin-activity-render'); if (activityLogs.length === 0) { list.innerHTML = "<p style='color:#888;'>No connections made yet.</p>"; return; }
-            const recentLogs = activityLogs.slice(-50).reverse();
-            list.innerHTML = recentLogs.map(log => `<div class="flow-log-item jelly-anim" onclick="openGhostView('${log.chatId}', '${log.fromUser} & ${log.toUser}')"><span class="flow-log-time">${log.time}</span><strong>${log.fromUser}</strong> <span class="flow-arrow">➔</span> <strong style="color:white;">${log.toUser}</strong></div>`).join('');
-        }
-
-        function openGhostView(chatId, title) {
-            document.querySelectorAll('.admin-section').forEach(el => el.style.display = 'none'); document.getElementById('admin-sec-ghost').style.display = 'flex'; document.getElementById('ghost-title').innerText = "Ghost View " + title;
-            const area = document.getElementById('ghost-chat-area'); area.innerHTML = '<p style="color:#888; text-align:center;">Intercepting messages...</p>';
-            db.ref('chats/' + chatId).off();
-            db.ref('chats/' + chatId).on('value', snapshot => {
-                area.innerHTML = ''; const data = snapshot.val(); if(!data) { area.innerHTML = '<p style="color:#888; text-align:center; margin-top:20px;">No messages found in this room yet.</p>'; return; }
-                Object.values(data).forEach(msg => {
-                    if(msg.init) return; const div = document.createElement('div');
-                    let ghostBody = msg.type === 'image' ? `<img src="${msg.text}" style="max-width:100%; border-radius:8px; margin-top:5px; display:block;">` : msg.text;
-                    if(msg.isAdminAlert || msg.isSystemMsg) { div.style.cssText = "background:rgba(30,30,30,0.8); color:#94a3b8; padding:10px; border-radius:8px; border-left:3px solid #64748b; font-size:12px; font-style:italic;"; div.innerHTML = `System Admin<br>${ghostBody}`; } else { div.style.cssText = "background:rgba(30,30,30,0.8); color:#ddd; padding:10px; border-radius:8px; border-left:3px solid #E50914; font-size:13px; word-break:break-word;"; div.innerHTML = `<span style="color:#25D366; font-weight:bold; font-size:11px;">${msg.senderName}</span><br>${ghostBody}`; }
-                    area.appendChild(div);
-                });
-                area.scrollTop = area.scrollHeight;
-            });
-        }
-        function closeGhostView() { db.ref('chats/').off(); openAdminSection('activity'); }
-
-        function renderAdminTickets() {
-            let searchTerm = document.getElementById('search-tickets').value.toLowerCase();
-            const list = document.getElementById('admin-ticket-list-render'); const ticketKeys = Object.keys(ticketsData);
-            
-            let filteredKeys = ticketKeys.filter(k => {
-                let t = ticketsData[k];
-                return k.toLowerCase().includes(searchTerm) || t.name.toLowerCase().includes(searchTerm) || t.issue.toLowerCase().includes(searchTerm);
-            });
-            
-            if (filteredKeys.length === 0) { list.innerHTML = "<p style='color:#888;'>No support tickets found.</p>"; return; }
-            list.innerHTML = filteredKeys.reverse().map(key => {
-                const t = ticketsData[key];
-                return `<div class="admin-list-item jelly-anim" style="${t.reply ? 'border-color: #25D366; opacity: 0.7;' : 'border-color: #f59e0b;'}"><div style="width: 100%; margin-bottom: 8px;"><span style="color:#E50914; font-size:12px; font-weight:bold; float:right;">${key}</span><strong style="color:white; font-size:16px;">${t.name}</strong> <span style="color:#888; font-size:12px;">(${t.mobile})</span></div><div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px; color: #ddd; font-size: 14px; margin-bottom: 12px;">${t.issue}</div>${t.reply ? `<p style="color:#25D366; font-size:13px; font-weight:bold;">Replied: ${t.reply}</p>` : `<div style="display:flex; gap:10px;"><input type="text" id="reply-input-${key}" placeholder="Type reply..." style="flex:1; padding:10px; border-radius:12px; border:none; background:rgba(255,255,255,0.1); color:white; font-size:13px; outline:none;"><button class="btn-success" style="margin:0; width:auto; padding:10px 15px; border-radius:12px;" onclick="sendTicketReply('${key}')">Send</button></div>`}</div>`;
-            }).join('');
-        }
-        function sendTicketReply(ticketId) { const reply = document.getElementById(`reply-input-${ticketId}`).value.trim(); if(!reply) { showToast("Please type a reply first!"); return; } db.ref(`tickets/${ticketId}`).update({ reply: reply, status: 'Resolved' }); db.ref('notifications/' + ticketsData[ticketId].mobile).push({ title: "Support Ticket Reply", body: reply, time: Date.now(), isRead: false }); showToast("Reply sent to user!"); }
-        
-        function renderAdminUsers() {
-            let searchTerm = document.getElementById('search-users').value.toLowerCase();
-            const list = document.getElementById('admin-user-list-render'); 
-            
-            let filteredUsers = users.filter(u => u.name.toLowerCase().includes(searchTerm) || String(u.mobile).includes(searchTerm));
-            
-            if (filteredUsers.length === 0) { list.innerHTML = "<p style='color:#888;'>No users found.</p>"; return; }
-            list.innerHTML = filteredUsers.map(u => {
-                let allDataHtml = ''; for (let key in u) { if(key !== 'dpUrl' && typeof u[key] !== 'object') allDataHtml += `<div style="font-size:13px; color:#ddd; margin-bottom:5px; padding-bottom:4px; border-bottom: 1px solid rgba(255,255,255,0.05);"><span style="color:#E50914; font-weight:600; text-transform: capitalize; display:inline-block; width: 80px;">${key}:</span> <span style="color:#fff;">${u[key]}</span></div>`; }
-                
-                return `
-                <div class="admin-list-item jelly-anim" style="${u.isBanned ? 'border-color: #555; opacity: 0.6;' : ''}">
-                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <strong style="color:white; font-size:16px;">${u.name}</strong>
-                        <div style="display:flex; gap:8px;">
-                            <select onchange="changeUserRole('${u.mobile}', this.value)" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:6px 10px; font-size:12px; outline:none;">
-                                <option value="user" style="color:black;" ${u.role === 'user' ? 'selected' : ''}>User</option>
-                                <option value="seller" style="color:black;" ${u.role === 'seller' ? 'selected' : ''}>Seller Admin</option>
-                                <option value="admin" style="color:black;" ${u.role === 'admin' ? 'selected' : ''}>Super Admin</option>
-                            </select>
-                            <button class="btn-danger-small jelly-anim" onclick="toggleBanUser('${u.mobile}', ${u.isBanned})" style="${u.isBanned ? 'background:rgba(255,255,255,0.2);' : ''}">${u.isBanned ? 'Unban' : 'Ban'}</button>
+                list.innerHTML = keys.map(k => `
+                    <div class="admin-list-item jelly-anim">
+                        <div style="color:white; font-size:15px; margin-bottom:8px;">"${sugg[k].text}"</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span style="color:#aaa; font-size:12px;">- ${sugg[k].user} (${sugg[k].mobile})</span>
+                            <button class="btn-danger-small jelly-anim" onclick="db.ref('suggestions/${k}').remove(); showToast('Deleted'); setTimeout(renderAdminSuggestions,500);">Del</button>
                         </div>
                     </div>
-                    <div style="width: 100%; background: rgba(0,0,0,0.5); padding: 12px; border-radius: 12px;">${allDataHtml}</div>
-                </div>`;
-            }).join('');
+                `).join('');
+            });
         }
-        function toggleBanUser(mobile, isCurrentlyBanned) { if(String(mobile) === 'ankitankit') { showToast("Super Admin cannot be banned!"); return; } db.ref('users/' + mobile).update({ isBanned: !isCurrentlyBanned }); showToast(isCurrentlyBanned ? "User Unbanned!" : "User Banned!"); setTimeout(renderAdminUsers, 500); }
-        function changeUserRole(mobile, newRole) { if(String(mobile) === 'ankitankit') { showToast("Super Admin role locked!"); return; } db.ref('users/' + mobile).update({ role: newRole }); showToast("User Role Updated!"); }
 
-        function openProfile() { switchScreen('screen-profile'); }
-        function toggleDpInput() { const dpSection = document.getElementById('dp-input-section'); dpSection.style.display = dpSection.style.display === 'none' ? 'block' : 'none'; }
-        function saveProfile() { 
-            const newDpUrl = document.getElementById('prof-dp-url').value.trim(); const newBio = document.getElementById('prof-bio').value.trim();
-            db.ref('users/' + currentUser.mobile).update({ dpUrl: newDpUrl, bio: newBio }); currentUser.dpUrl = newDpUrl; currentUser.bio = newBio; document.getElementById('my-profile-img').src = getAvatarUrl(currentUser); showToast("Profile Updated!"); window.history.back(); 
+        function renderAdminVerifications() {
+            db.ref('verification_requests').once('value').then(snap => {
+                const reqs = snap.val() || {};
+                const list = document.getElementById('admin-verify-list-render');
+                const keys = Object.keys(reqs);
+                
+                if(keys.length === 0) { list.innerHTML = '<p style="color:#888;">No pending requests.</p>'; return; }
+                
+                list.innerHTML = keys.map(k => `
+                    <div class="admin-list-item jelly-anim" style="border-left-color:#3b82f6;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong style="color:white; font-size:16px;">${reqs[k].name}</strong>
+                            <span style="color:#aaa; font-size:12px;">${reqs[k].mobile}</span>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.5); padding:10px; margin-top:8px; border-radius:10px; color:#ddd; font-style:italic;">"${reqs[k].message}"</div>
+                        <div style="display:flex; gap:10px; margin-top:12px;">
+                            <button class="btn-success" style="margin:0; flex:1;" onclick="approveVerification('${k}')">Approve</button>
+                            <button class="btn-danger-small" style="margin:0; flex:1;" onclick="rejectVerification('${k}')">Reject (24h Cooldown)</button>
+                        </div>
+                    </div>
+                `).join('');
+            });
         }
+
+        function approveVerification(mobile) {
+            const code = 'V-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+            db.ref('users/' + mobile).update({ verified: true, verifyCode: code });
+            db.ref('verification_requests/' + mobile).remove();
+            showToast("User Verified!");
+            renderAdminVerifications();
+        }
+
+        function rejectVerification(mobile) {
+            db.ref('users/' + mobile).update({ verifyCooldown: Date.now() + (24*60*60*1000) });
+            db.ref('verification_requests/' + mobile).remove();
+            showToast("Request Rejected. Cooldown applied.");
+            renderAdminVerifications();
+        }
+
+        function backupAllChats() {
+            db.ref('chats').once('value').then(snap => {
+                const data = JSON.stringify(snap.val() || {});
+                const blob = new Blob([data], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `BTD_Chat_Backup_${new Date().getTime()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast("Backup downloaded!");
+            });
+        }
+
+        function clearAllChats() {
+            if(confirm("DANGER: This will permanently delete ALL chats from the database. Are you absolutely sure?")) {
+                if(confirm("Final Warning! Click OK to format all chats.")) {
+                    db.ref('chats').remove().then(() => showToast("All chats wiped successfully."));
+                }
+            }
+        }
+
+        function renderActivityLogs() {
+            const container = document.getElementById('admin-activity-render');
+            if(activityLogs.length === 0) {
+                container.innerHTML = "<p style='color:#888;'>No flow activity recorded yet.</p>"; return;
+            }
+            container.innerHTML = activityLogs.slice(-100).reverse().map(log => `
+                <div class="admin-list-item jelly-anim" style="padding:10px; margin-bottom:8px; border-left-width:3px;">
+                    <div style="font-size:13px; color:#ddd;">
+                        <span style="color:#3b82f6; font-weight:bold;">${log.fromUser}</span> sent a message to <span style="color:#10b981; font-weight:bold;">${log.toUser || 'Group'}</span>
+                    </div>
+                    <div style="font-size:10px; color:#666; margin-top:4px; text-align:right;">${log.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function closeGhostView() {
+            db.ref('chats').off();
+            document.getElementById('admin-sec-ghost').style.display = 'none';
+            document.getElementById('admin-grid').style.display = 'grid';
+            document.getElementById('admin-title').innerText = "Admin Console";
+        }
+
     </script>
 </body>
 </html>
